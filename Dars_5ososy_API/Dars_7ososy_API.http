@@ -1,0 +1,6 @@
+@Dars_5ososy_API_HostAddress = http://localhost:5012
+
+GET {{Dars_5ososy_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

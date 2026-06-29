@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dars_5ososy_API", "Dars_5ososy_API\Dars_5ososy_API.csproj", "{CBDB3A9D-3EC7-140B-C78C-3FC7C43B32BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dars_5ososy_API.Application", "Dars_5ososy_API.Application\Dars_5ososy_API.Application.csproj", "{07B848C8-7252-BD38-22B6-AC39762AB622}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dars_5ososy_API.Domain", "Dars_5ososy_API.Domain\Dars_5ososy_API.Domain.csproj", "{618C4CEA-3303-F916-AAB3-B0DC7B27FCCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dars_5ososy_API.Infrastructure", "Dars_5ososy_API.Infrastructure\Dars_5ososy_API.Infrastructure.csproj", "{C950EEA2-F9DB-8807-9B8E-C31459413E50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dars_5ososy_API.Shared", "Dars_5ososy_API.Shared\Dars_5ososy_API.Shared.csproj", "{E3A17D6D-235B-B955-B8A2-9817800AC67D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBDB3A9D-3EC7-140B-C78C-3FC7C43B32BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBDB3A9D-3EC7-140B-C78C-3FC7C43B32BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBDB3A9D-3EC7-140B-C78C-3FC7C43B32BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBDB3A9D-3EC7-140B-C78C-3FC7C43B32BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07B848C8-7252-BD38-22B6-AC39762AB622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B848C8-7252-BD38-22B6-AC39762AB622}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B848C8-7252-BD38-22B6-AC39762AB622}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B848C8-7252-BD38-22B6-AC39762AB622}.Release|Any CPU.Build.0 = Release|Any CPU
+		{618C4CEA-3303-F916-AAB3-B0DC7B27FCCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{618C4CEA-3303-F916-AAB3-B0DC7B27FCCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{618C4CEA-3303-F916-AAB3-B0DC7B27FCCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{618C4CEA-3303-F916-AAB3-B0DC7B27FCCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C950EEA2-F9DB-8807-9B8E-C31459413E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C950EEA2-F9DB-8807-9B8E-C31459413E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C950EEA2-F9DB-8807-9B8E-C31459413E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C950EEA2-F9DB-8807-9B8E-C31459413E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3A17D6D-235B-B955-B8A2-9817800AC67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3A17D6D-235B-B955-B8A2-9817800AC67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3A17D6D-235B-B955-B8A2-9817800AC67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3A17D6D-235B-B955-B8A2-9817800AC67D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25E63B0C-E6A7-4F55-971F-B60EACFA5667}
+	EndGlobalSection
+EndGlobal

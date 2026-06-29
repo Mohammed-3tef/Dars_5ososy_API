@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dars_5ososy_API.Domain\Dars_5ososy_API.Domain.csproj" />
+    <ProjectReference Include="..\Dars_5ososy_API.Infrastructure\Dars_5ososy_API.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
