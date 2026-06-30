@@ -7,7 +7,6 @@ using Dars_5ososy_API.Domain.Entities;
 using Dars_5ososy_API.Infrastructure;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,7 @@ using System.Net;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -45,6 +44,9 @@ namespace Dars_5ososy_API.Controllers
             _db = db;
         }
 
+        /// <summary>Register a new user.</summary>
+        /// <response code="201">User registered successfully.</response>
+        /// <response code="400">User registration failed.</response>
         [HttpPost("register")]
         public async Task<IActionResult> Register(CreatedUserDTO dto)
         {
@@ -82,6 +84,9 @@ namespace Dars_5ososy_API.Controllers
             return Ok(apiResponse);
         }
 
+        /// <summary>Login a user.</summary>
+        /// <response code="200">Login successful.</response>
+        /// <response code="401">Invalid email or password.</response>
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDTO dto)
         {
@@ -107,6 +112,10 @@ namespace Dars_5ososy_API.Controllers
             return Ok(apiResponse);
         }
 
+        /// <summary>Refresh a user's token.</summary>
+        /// <response code="200">Refresh token refreshed successfully.</response>
+        /// <response code="400">Refresh token is required.</response>
+        /// <response code="401">Invalid refresh token.</response>
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(RefreshRequestDTO dto)
         {
@@ -135,6 +144,10 @@ namespace Dars_5ososy_API.Controllers
             );
         }
 
+        /// <summary>Confirm a user's email.</summary>
+        /// <response code="200">Email confirmed successfully.</response>
+        /// <response code="400">Invalid email confirmation.</response>
+        /// <response code="404">User not found.</response>
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
@@ -151,6 +164,11 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<string>.Succeeded(user.Email, "Email confirmed successfully"));
         }
 
+        /// <summary>Initiate a password reset request.</summary>
+        /// <remarks>Only <c>Authorized users</c> can request a password reset.</remarks>
+        /// <response code="200">Reset link sent successfully.</response>
+        /// <response code="400">Invalid email address.</response>
+        [Authorize]
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(string email)
         {
@@ -181,6 +199,10 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<string>.Succeeded(string.Empty, "Reset link sent"));
         }
 
+        /// <summary>Reset a user's password.</summary>
+        /// <response code="200">Password reset successful.</response>
+        /// <response code="400">Password reset failed.</response>
+        /// <response code="404">User not found.</response>
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordDTO dto)
         {
@@ -200,6 +222,10 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<string>.Succeeded(string.Empty, "Password reset successful"));
         }
 
+        /// <summary>Logout the current user.</summary>
+        /// <remarks>Only <c>Authorized users</c> can logout.</remarks>
+        /// <response code="200">Logged out successfully.</response>
+        /// <response code="401">User not found.</response>
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

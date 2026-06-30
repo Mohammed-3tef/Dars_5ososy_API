@@ -1,5 +1,4 @@
-﻿using Dars_5ososy_API.Application.DTOs.AddressDTOs;
-using Dars_5ososy_API.Application.DTOs.UserDTOs;
+﻿using Dars_5ososy_API.Application.DTOs.UserDTOs;
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -18,6 +17,11 @@ namespace Dars_5ososy_API.Controllers
             _userService = userService;
         }
 
+        /// <summary>Get the details of the currently authenticated user.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">User details retrieved successfully.</response>
+        /// <response code="401">User not authenticated.</response>
+        /// <response code="404">User not found.</response>
         [Authorize]
         [HttpGet("me")]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
@@ -36,38 +40,52 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
+        /// <summary>Get a user by username.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">User details retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
         [HttpGet("get-by-username/{userName}")]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByUserName(string userName)
         {
             var user = await _userService.GetByUserNameAsync(userName);
-
             if (user == null)
-                return BadRequest(ApiResponse<object>.Fail("User not found"));
-
+                return NotFound(ApiResponse<object>.Fail("User not found"));
             return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
+        /// <summary>Get a user by email.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">User details retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
         [HttpGet("get-by-email/{email}")]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _userService.GetByEmailAsync(email);
             if (user == null)
-                return BadRequest(ApiResponse<object>.Fail("User not found"));
+                return NotFound(ApiResponse<object>.Fail("User not found"));
             return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
+        /// <summary>Get a user by phone number.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">User details retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
         [HttpGet("get-by-phone/{phoneNumber}")]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByPhoneNumber(string phoneNumber)
         {
             var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
             if (user == null)
-                return BadRequest(ApiResponse<object>.Fail("User not found"));
+                return NotFound(ApiResponse<object>.Fail("User not found"));
             return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
+        /// <summary>Get all users.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">Users retrieved successfully.</response>
+        /// <response code="404">No users found.</response>
         [HttpGet("get-all")]
         [ProducesResponseType(typeof(ApiResponse<List<UserDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllUsers()
@@ -78,7 +96,13 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<List<UserDTO>>.Succeeded(users, "All users retrieved successfully"));
         }
 
+        /// <summary>Create a new user.</summary>
+        /// <remarks>Only users with the <c>Admin</c> role can create a user.</remarks>
+        /// <response code="201">User created successfully.</response>
+        /// <response code="400">User creation failed.</response>
         [HttpPost("create")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateUser(CreatedUserDTO createdUserDTO)
         {
             var createdUser = await _userService.CreateAsync(createdUserDTO, createdUserDTO.Password);
@@ -87,6 +111,10 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<UserDTO>.Succeeded(createdUser, "User created successfully"));
         }
 
+        /// <summary>Update an existing user.</summary>
+        /// <remarks>Only <c>Authorized users</c> can update a user.</remarks>
+        /// <response code="200">User updated successfully.</response>
+        /// <response code="400">User update failed.</response>
         [Authorize]
         [HttpPut("update")]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
@@ -98,6 +126,10 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<UserDTO>.Succeeded(updatedUser, "User updated successfully"));
         }
 
+        /// <summary>Delete an existing user.</summary>
+        /// <remarks>Only <c>Authorized users</c> can delete a user.</remarks>
+        /// <response code="200">User deleted successfully.</response>
+        /// <response code="400">User deletion failed.</response>
         [Authorize]
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]

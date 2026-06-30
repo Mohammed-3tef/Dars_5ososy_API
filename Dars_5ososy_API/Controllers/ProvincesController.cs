@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/provinces")]
     [ApiController]
     public class ProvincesController : ControllerBase
     {

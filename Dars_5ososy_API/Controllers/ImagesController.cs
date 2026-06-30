@@ -1,11 +1,12 @@
 ﻿using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Domain.Entities;
 using Dars_5ososy_API.Shared.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/images")]
     [ApiController]
     public class ImagesController : ControllerBase
     {
@@ -16,6 +17,9 @@ namespace Dars_5ososy_API.Controllers
             _imageService = imageService;
         }
 
+        /// <summary>Upload a new image.</summary>
+        /// <response code="201">Image uploaded successfully.</response>
+        /// <response code="400">Image upload failed.</response>
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile image)
         {
@@ -25,6 +29,9 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<int>.Succeeded(entity.Id, "Image uploaded successfully."));
         }
 
+        /// <summary>Get images by user.</summary>
+        /// <response code="200">Images retrieved successfully.</response>
+        /// <response code="404">No images found for the specified user.</response>
         [HttpGet("get-user/{username}")]
         public async Task<IActionResult> GetImagesByUser(string username)
         {
@@ -34,6 +41,9 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<List<Image>>.Succeeded(images, "Images retrieved successfully."));
         }
 
+        /// <summary>Get an image by ID.</summary>
+        /// <response code="200">Image retrieved successfully.</response>
+        /// <response code="404">Image not found.</response>
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetImage(int id)
         {
@@ -43,6 +53,11 @@ namespace Dars_5ososy_API.Controllers
             return File(image.Data, image.ContentType);
         }
 
+        /// <summary>Update an existing image.</summary>
+        /// <remarks>Only <c>Authorized users</c> can update an image.</remarks>
+        /// <response code="200">Image updated successfully.</response>
+        /// <response code="404">Image not found.</response>
+        [Authorize]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateImage(int id, IFormFile image)
         {
@@ -52,6 +67,11 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<Image>.Succeeded(updatedImage, "Image updated successfully."));
         }
 
+        /// <summary>Delete an existing image.</summary>
+        /// <remarks>Only <c>Authorized users</c> can delete an image.</remarks>
+        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="404">Image not found.</response>
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteImage(int id)
         {

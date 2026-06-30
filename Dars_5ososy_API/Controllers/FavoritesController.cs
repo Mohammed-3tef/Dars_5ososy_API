@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/favorites")]
     [ApiController]
     public class FavoritesController : ControllerBase
     {
@@ -17,7 +17,11 @@ namespace Dars_5ososy_API.Controllers
             _FavoriteService = FavoriteService;
         }
 
+        /// <summary>Get all favorites.</summary>
+        /// <response code="200">Favorites retrieved successfully.</response>
+        /// <response code="404">No favorites found.</response>
         [HttpGet("get-all")]
+        [ProducesResponseType(typeof(ApiResponse<List<FavoriteDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllFavorites()
         {
             var Favorites = await _FavoriteService.GetAllAsync();
@@ -26,7 +30,11 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
+        /// <summary>Get favorites by student username.</summary>
+        /// <response code="200">Favorites retrieved successfully.</response>
+        /// <response code="404">No favorites found for the specified student.</response>
         [HttpGet("get-by-student/{studentUsername}")]
+        [ProducesResponseType(typeof(ApiResponse<List<FavoriteDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFavoritesByStudentUsername(string studentUsername)
         {
             var Favorites = await _FavoriteService.GetByStudentUsernameAsync(studentUsername);
@@ -36,7 +44,11 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
+        /// <summary>Get favorites by teacher username.</summary>
+        /// <response code="200">Favorites retrieved successfully.</response>
+        /// <response code="404">No favorites found for the specified teacher.</response>
         [HttpGet("get-by-teacher/{teacherUsername}")]
+        [ProducesResponseType(typeof(ApiResponse<List<FavoriteDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFavoritesByTeacherUsername(string teacherUsername)
         {
             var Favorites = await _FavoriteService.GetByTeacherUsernameAsync(teacherUsername);
@@ -45,7 +57,11 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
+        /// <summary>Get a favorite by student and teacher usernames.</summary>
+        /// <response code="200">Favorite retrieved successfully.</response>
+        /// <response code="404">No favorite found for the specified student and teacher.</response>
         [HttpGet("get/{studentUsername}/{teacherUsername}")]
+        [ProducesResponseType(typeof(ApiResponse<FavoriteDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFavoriteByStudentAndTeacher(string studentUsername, string teacherUsername)
         {
             var Favorite = await _FavoriteService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
@@ -55,8 +71,13 @@ namespace Dars_5ososy_API.Controllers
             return Ok(ApiResponse<FavoriteDTO>.Succeeded(Favorite, "Favorite retrieved successfully."));
         }
 
-        [HttpPost("create")]
+        /// <summary>Create a new favorite.</summary>
+        /// <remarks>Only <c>Authorized users</c> can create a favorite.</remarks>
+        /// <response code="201">Favorite created successfully.</response>
+        /// <response code="400">Favorite with the same details already exists.</response>
         [Authorize]
+        [HttpPost("create")]
+        [ProducesResponseType(typeof(ApiResponse<FavoriteDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateFavorite(FavoriteDTO FavoriteDto)
         {
             var createdFavorite = await _FavoriteService.CreateAsync(FavoriteDto);
@@ -66,8 +87,13 @@ namespace Dars_5ososy_API.Controllers
             return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Succeeded(createdFavorite, "Favorite created successfully."));
         }
 
-        [HttpDelete("delete/{studentUsername}/{teacherUsername}")]
+        /// <summary>Delete a favorite by student and teacher usernames.</summary>
+        /// <remarks>Only <c>Authorized users</c> can delete a favorite.</remarks>
+        /// <response code="200">Favorite deleted successfully.</response>
+        /// <response code="404">Favorite not found.</response>
         [Authorize]
+        [HttpDelete("delete/{studentUsername}/{teacherUsername}")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteFavorite(string studentUsername, string teacherUsername)
         {
             var isDeleted = await _FavoriteService.DeleteAsync(studentUsername, teacherUsername);
