@@ -23,7 +23,7 @@ namespace Dars_5ososy_API.Controllers
             var educationStages = await _educationStageService.GetAllAsync();
             if (educationStages == null || !educationStages.Any())
                 return NotFound(ApiResponse<object>.Fail("No education stages found."));
-            return Ok(ApiResponse<object>.Succeeded(educationStages, "Education stages retrieved successfully."));
+            return Ok(ApiResponse<List<EducationStageDTO>>.Succeeded(educationStages, "Education stages retrieved successfully."));
         }
 
         [HttpGet("get-by-name/{educationStageName}")]
@@ -34,7 +34,7 @@ namespace Dars_5ososy_API.Controllers
             if (educationStage == null)
                 return NotFound(ApiResponse<object>.Fail("Education stage not found."));
 
-            return Ok(ApiResponse<object>.Succeeded(educationStage, "Education stage retrieved successfully."));
+            return Ok(ApiResponse<EducationStageDTO>.Succeeded(educationStage, "Education stage retrieved successfully."));
         }
 
         [HttpPost("create")]
@@ -45,7 +45,7 @@ namespace Dars_5ososy_API.Controllers
             if (createdEducationStage == null)
                 return BadRequest(ApiResponse<object>.Fail("Education stage with the same name already exists."));
 
-            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<object>.Succeeded(createdEducationStage, "Education system created successfully."));
+            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<EducationStageDTO>.Succeeded(createdEducationStage, "Education stage created successfully."));
         }
 
         [HttpPut("update")]
@@ -56,7 +56,7 @@ namespace Dars_5ososy_API.Controllers
             if (updatedEducationStage == null)
                 return NotFound(ApiResponse<object>.Fail("Education stage not found."));
 
-            return Ok(ApiResponse<object>.Succeeded(updatedEducationStage, "Education stage updated successfully."));
+            return Ok(ApiResponse<EducationStageDTO>.Succeeded(updatedEducationStage, "Education stage updated successfully."));
         }
 
         [HttpDelete("delete/{id}")]

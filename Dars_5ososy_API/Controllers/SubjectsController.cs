@@ -24,7 +24,7 @@ namespace Dars_5ososy_API.Controllers
             var subjects = await _subjectService.GetAllAsync();
             if (subjects == null || !subjects.Any())
                 return NotFound(ApiResponse<object>.Fail("No subjects found."));
-            return Ok(ApiResponse<object>.Succeeded(subjects, "Subjects retrieved successfully."));
+            return Ok(ApiResponse<List<SubjectDTO>>.Succeeded(subjects, "Subjects retrieved successfully."));
         }
 
         [HttpGet("get-by-name/{subjectName}")]
@@ -35,7 +35,7 @@ namespace Dars_5ososy_API.Controllers
             if (subject == null)
                 return NotFound(ApiResponse<object>.Fail("Subject not found."));
 
-            return Ok(ApiResponse<object>.Succeeded(subject, "Subject retrieved successfully."));
+            return Ok(ApiResponse<SubjectDTO>.Succeeded(subject, "Subject retrieved successfully."));
         }
 
         [HttpPost("create")]
@@ -46,7 +46,7 @@ namespace Dars_5ososy_API.Controllers
             if (createdSubject == null)
                 return BadRequest(ApiResponse<object>.Fail("Subject with the same name already exists."));
 
-            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<object>.Succeeded(createdSubject, "Subject created successfully."));
+            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<SubjectDTO>.Succeeded(createdSubject, "Subject created successfully."));
         }
 
         [HttpPut("update")]
@@ -57,7 +57,7 @@ namespace Dars_5ososy_API.Controllers
             if (updatedSubject == null)
                 return NotFound(ApiResponse<object>.Fail("Subject not found."));
 
-            return Ok(ApiResponse<object>.Succeeded(updatedSubject, "Subject updated successfully."));
+            return Ok(ApiResponse<SubjectDTO>.Succeeded(updatedSubject, "Subject updated successfully."));
         }
 
         [HttpDelete("delete/{id}")]

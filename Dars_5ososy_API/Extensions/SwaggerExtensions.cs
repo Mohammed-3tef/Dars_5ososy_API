@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace Dars_5ososy_API.Extensions
 {
@@ -52,6 +53,8 @@ namespace Dars_5ososy_API.Extensions
                         new List<string>()
                     }
                 });
+
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
             });
 
             return services;

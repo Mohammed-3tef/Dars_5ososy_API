@@ -2,7 +2,6 @@
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
@@ -24,7 +23,7 @@ namespace Dars_5ososy_API.Controllers
             var Favorites = await _FavoriteService.GetAllAsync();
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found."));
-            return Ok(ApiResponse<object>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
         [HttpGet("get-by-student/{studentUsername}")]
@@ -34,7 +33,7 @@ namespace Dars_5ososy_API.Controllers
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified student."));
 
-            return Ok(ApiResponse<object>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
         [HttpGet("get-by-teacher/{teacherUsername}")]
@@ -43,7 +42,7 @@ namespace Dars_5ososy_API.Controllers
             var Favorites = await _FavoriteService.GetByTeacherUsernameAsync(teacherUsername);
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified teacher."));
-            return Ok(ApiResponse<object>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
         }
 
         [HttpGet("get/{studentUsername}/{teacherUsername}")]
@@ -53,7 +52,7 @@ namespace Dars_5ososy_API.Controllers
             if (Favorite == null)
                 return NotFound(ApiResponse<object>.Fail("No Favorite found for the specified student and teacher."));
 
-            return Ok(ApiResponse<object>.Succeeded(Favorite, "Favorite retrieved successfully."));
+            return Ok(ApiResponse<FavoriteDTO>.Succeeded(Favorite, "Favorite retrieved successfully."));
         }
 
         [HttpPost("create")]
@@ -64,7 +63,7 @@ namespace Dars_5ososy_API.Controllers
             if (createdFavorite == null)
                 return BadRequest(ApiResponse<object>.Fail("Favorite with the same details already exists."));
 
-            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<object>.Succeeded(createdFavorite, "Favorite created successfully."));
+            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Succeeded(createdFavorite, "Favorite created successfully."));
         }
 
         [HttpDelete("delete/{studentUsername}/{teacherUsername}")]

@@ -20,7 +20,7 @@ namespace Dars_5ososy_API.Infrastructure
         public DbSet<EducationStage> EducationStages { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Upload> Uploads { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

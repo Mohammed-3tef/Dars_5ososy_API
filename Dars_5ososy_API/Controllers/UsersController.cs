@@ -1,4 +1,5 @@
-﻿using Dars_5ososy_API.Application.DTOs.UserDTOs;
+﻿using Dars_5ososy_API.Application.DTOs.AddressDTOs;
+using Dars_5ososy_API.Application.DTOs.UserDTOs;
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@ namespace Dars_5ososy_API.Controllers
 
         [Authorize]
         [HttpGet("me")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMe()
         {
             var username = User.Identity?.Name;
@@ -31,10 +33,11 @@ namespace Dars_5ososy_API.Controllers
             if (user == null)
                 return NotFound(ApiResponse<object>.Fail("User not found"));
 
-            return Ok(ApiResponse<object>.Succeeded(user, "User details retrieved successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
         [HttpGet("get-by-username/{userName}")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByUserName(string userName)
         {
             var user = await _userService.GetByUserNameAsync(userName);
@@ -42,38 +45,37 @@ namespace Dars_5ososy_API.Controllers
             if (user == null)
                 return BadRequest(ApiResponse<object>.Fail("User not found"));
 
-            return Ok(ApiResponse<object>.Succeeded(user, "User details retrieved successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
         [HttpGet("get-by-email/{email}")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _userService.GetByEmailAsync(email);
-
             if (user == null)
                 return BadRequest(ApiResponse<object>.Fail("User not found"));
-
-            return Ok(ApiResponse<object>.Succeeded(user, "User details retrieved successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
         [HttpGet("get-by-phone/{phoneNumber}")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByPhoneNumber(string phoneNumber)
         {
             var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
-
             if (user == null)
                 return BadRequest(ApiResponse<object>.Fail("User not found"));
-
-            return Ok(ApiResponse<object>.Succeeded(user, "User details retrieved successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(user, "User details retrieved successfully"));
         }
 
         [HttpGet("get-all")]
+        [ProducesResponseType(typeof(ApiResponse<List<UserDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllAsync();
             if (users == null || !users.Any())
                 return NotFound(ApiResponse<object>.Fail("No users found"));
-            return Ok(ApiResponse<object>.Succeeded(users, "All users retrieved successfully"));
+            return Ok(ApiResponse<List<UserDTO>>.Succeeded(users, "All users retrieved successfully"));
         }
 
         [HttpPost("create")]
@@ -82,21 +84,23 @@ namespace Dars_5ososy_API.Controllers
             var createdUser = await _userService.CreateAsync(createdUserDTO, createdUserDTO.Password);
             if (createdUser == null)
                 return BadRequest(ApiResponse<object>.Fail("User creation failed"));
-            return Ok(ApiResponse<object>.Succeeded(createdUser, "User created successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(createdUser, "User created successfully"));
         }
 
-        [HttpPut("update")]
         [Authorize]
+        [HttpPut("update")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateUser(UpdatedUserDTO userDto)
         {
             var updatedUser = await _userService.UpdateAsync(userDto);
             if (updatedUser == null)
                 return BadRequest(ApiResponse<object>.Fail("User update failed"));
-            return Ok(ApiResponse<object>.Succeeded(updatedUser, "User updated successfully"));
+            return Ok(ApiResponse<UserDTO>.Succeeded(updatedUser, "User updated successfully"));
         }
 
-        [HttpDelete("delete/{id}")]
         [Authorize]
+        [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteUser(long id)
         {
             var result = await _userService.DeleteAsync(id);
