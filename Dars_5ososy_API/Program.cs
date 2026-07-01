@@ -1,3 +1,4 @@
+using Asp.Versioning.ApiExplorer;
 using Dars_5ososy_API.Extensions;
 
 namespace Dars_5ososy_API
@@ -25,7 +26,19 @@ namespace Dars_5ososy_API
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+                    // Build a swagger endpoint for each discovered version
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        options.SwaggerEndpoint(
+                            $"/swagger/{description.GroupName}/swagger.json",
+                            description.GroupName.ToUpperInvariant()
+                        );
+                    }
+                });
             }
 
             app.UseHttpsRedirection();

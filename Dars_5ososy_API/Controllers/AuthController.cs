@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Dars_5ososy_API.Application.DTOs;
 using Dars_5ososy_API.Application.DTOs.AuthDTOs;
 using Dars_5ososy_API.Application.DTOs.UserDTOs;
@@ -14,7 +15,8 @@ using System.Net;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/auth")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {

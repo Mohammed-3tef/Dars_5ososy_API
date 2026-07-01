@@ -1,4 +1,5 @@
-﻿using Dars_5ososy_API.Application.DTOs.UserDTOs;
+﻿using Asp.Versioning;
+using Dars_5ososy_API.Application.DTOs.UserDTOs;
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
-    [Route("api/users")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
