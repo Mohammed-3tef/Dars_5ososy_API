@@ -18,7 +18,7 @@ namespace Dars_5ososy_API.Application.DTOs.UserDTOs
         public DateOnly BirthDate { get; set; }
         public string? PhotoUrl { get; set; }
         public string? Bio { get; set; }
-        public char Gender { get; set; }
+        public string Gender { get; set; }
         public bool IsStudent { get; set; } = true;
     }
 

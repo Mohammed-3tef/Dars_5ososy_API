@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Web;
 
 namespace Dars_5ososy_API.Controllers
 {
@@ -20,6 +21,7 @@ namespace Dars_5ososy_API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private const string ApiVersion = "1.0";
         private readonly IMapper _mapper;
         private readonly AuthService _authService;
         private readonly UserManager<User> _userManager;
@@ -58,13 +60,17 @@ namespace Dars_5ososy_API.Controllers
             if (!result)
                 return BadRequest(ApiResponse<object>.Fail($"{(dto.IsStudent ? "Student" : "Teacher")} creation failed"));
 
-            User user= _mapper.Map<User>(dto);
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+                return BadRequest(ApiResponse<object>.Fail("User registration failed"));
+
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var validToken = HttpUtility.UrlEncode(confirmationToken);
 
             var confirmationLink = Url.Action(
                 "ConfirmEmail",
                 "Auth",
-                new { userId = user.Id, token = confirmationToken },
+                new { version = ApiVersion, email = user.Email, token = validToken },
                 Request.Scheme
             );
 
@@ -75,6 +81,7 @@ namespace Dars_5ososy_API.Controllers
                 ToEmail = user.Email,
                 Subject = "Confirm your email",
                 Body = EmailService.CreateEmailBody("Confirm your email", confirmEmailBody, confirmationLink),
+                IsHtml = true
             };
             await _emailService.SendEmailAsync(emailRequest);
 
@@ -189,7 +196,7 @@ namespace Dars_5ososy_API.Controllers
             var resetLink = Url.Action(
                 "ResetPassword",
                 "Auth",
-                new { email, token },
+                new { version = ApiVersion, email, token },
                 Request.Scheme
             );
 
@@ -200,6 +207,7 @@ namespace Dars_5ososy_API.Controllers
                 ToEmail = user.Email,
                 Subject = "Reset your password",
                 Body = EmailService.CreateEmailBody("Reset your password", resetEmailBody, resetLink),
+                IsHtml = true
             };
             await _emailService.SendEmailAsync(emailRequest);
 

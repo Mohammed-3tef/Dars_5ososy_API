@@ -21,247 +21,121 @@ namespace Dars_5ososy_API.Application.Services
         public static string CreateEmailBody(string topic, string message, string link)
         {
             string template = $@"
-                <!DOCTYPE html>
-                <html lang='en'>
-                <head>
-                    <meta charset='UTF-8'>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    <link rel='preconnect' href='https://fonts.googleapis.com'>
-                    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-                    <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' rel='stylesheet'>
-                    <title>Welcome to Dars 5ososy</title>
-                    <style>
-                        :root {{
-                            --primary: #2563eb;
-                            --primary-light: #eff6ff;
-                            --text-main: #1e293b;
-                            --text-muted: #64748b;
-                            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-                            --shadow-md: 0 10px 30px rgba(37, 99, 235, 0.06);
-                        }}
+        <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+        <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+        <head>
+            <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+            <title>Welcome to Dars 5ososy</title>
+        </head>
+        <body style='margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;'>
+            
+            <!-- Outer wrapper table to force centering -->
+            <table border='0' cellpadding='0' cellspacing='0' width='100%' style='background-color: #f8fafc; padding: 40px 20px;'>
+                <tr>
+                    <td align='center'>
+                        
+                        <!-- Main Content Container Card -->
+                        <table border='0' cellpadding='0' cellspacing='0' width='100%' style='max-width: 600px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.04);'>
+                            
+                            <!-- Top Accent Decorative Bar -->
+                            <tr>
+                                <td height='6' style='background-color: #2563eb; font-size: 0; line-height: 0;'>&nbsp;</td>
+                            </tr>
+                            
+                            <!-- Header Content (Title) -->
+                            <tr>
+                                <td align='center' style='padding: 40px 40px 10px 40px;'>
+                                    <h1 style='margin: 0; font-size: 26px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px;'>
+                                        Welcome to <span style='color: #2563eb;'>Dars 5ososy</span>
+                                    </h1>
+                                </td>
+                            </tr>
+                            
+                            <!-- Inner Content Box -->
+                            <tr>
+                                <td style='padding: 20px 40px;'>
+                                    <table border='0' cellpadding='0' cellspacing='0' width='100%' style='background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);'>
+                                        <tr>
+                                            <td align='center' style='padding: 32px 24px;'>
+                                                
+                                                <!-- Topic Heading -->
+                                                <div style='margin: 0 0 12px 0; font-size: 18px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;'>
+                                                    {topic}
+                                                </div>
+                                                
+                                                <!-- Message Content -->
+                                                <p style='margin: 0 0 28px 0; font-size: 15px; line-height: 1.6; color: #64748b; font-weight: 500;'>
+                                                    {message}
+                                                </p>
+                                                
+                                                <!-- BULLETPROOF BUTTON SOLUTION -->
+                                                <table border='0' cellpadding='0' cellspacing='0' style='margin: 0 auto;'>
+                                                    <tr>
+                                                        <td align='center' bgcolor='#2563eb' style='border-radius: 10px; background-color: #2563eb;'>
+                                                            <a href='{link}' target='_blank' style='display: inline-block; padding: 14px 32px; font-size: 15px; font-family: sans-serif; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; background-color: #2563eb; border: 1px solid #2563eb;'>
+                                                                Go to {topic}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
 
-                        * {{
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                        }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            
+                            <!-- Info Alert Callout Banner -->
+                            <tr>
+                                <td style='padding: 10px 40px 30px 40px;'>
+                                    <table border='0' cellpadding='0' cellspacing='0' width='100%' style='background-color: #eff6ff; border-left: 4px solid #2563eb; border-radius: 4px 12px 12px 4px;'>
+                                        <tr>
+                                            <td style='padding: 20px 24px;'>
+                                                <div style='margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #1e293b;'>We're Glad You're Here!</div>
+                                                <div style='margin: 0; font-size: 13.5px; line-height: 1.5; color: #475569; font-weight: 500;'>Dars 5ososy is designed to elevate your learning experience. Dive into engaging lessons, connect with expert tutors, and achieve your academic goals.</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            
+                            <!-- Footer Area -->
+                            <tr>
+                                <td align='center' style='background-color: #fafafa; padding: 32px 40px; border-top: 1px solid #e2e8f0;'>
+                                    
+                                    <p style='margin: 0 0 16px 0; font-size: 14px; line-height: 1.5; color: #64748b; font-weight: 500;'>
+                                        Best regards,<br />
+                                        <strong style='color: #2563eb; font-weight: 700;'>The Dars 5ososy Team</strong>
+                                    </p>
+                                    
+                                    <!-- Social HTML Links -->
+                                    <table border='0' cellpadding='0' cellspacing='0' style='margin: 0 auto;'>
+                                        <tr>
+                                            <td style='padding: 0 6px;'>
+                                                <a href='https://www.instagram.com/yourprofile' style='display: inline-block; font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #ffffff;'>Instagram</a>
+                                            </td>
+                                            <td style='padding: 0 6px;'>
+                                                <a href='https://www.facebook.com/yourprofile' style='display: inline-block; font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #ffffff;'>Facebook</a>
+                                            </td>
+                                            <td style='padding: 0 6px;'>
+                                                <a href='mailto:appvioteam@gmail.com' style='display: inline-block; font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #ffffff;'>Email Contact</a>
+                                            </td>
+                                        </tr>
+                                    </table>
 
-                        body {{
-                            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-                            background-color: #f8fafc;
-                            color: var(--text-main);
-                            line-height: 1.6;
-                            padding: 40px 20px;
-                        }}
-
-                        .container {{
-                            max-width: 680px;
-                            margin: 0 auto;
-                            background-color: #ffffff;
-                            border-radius: 24px;
-                            box-shadow: var(--shadow-md);
-                            border: 1px solid #e2e8f0;
-                            overflow: hidden;
-                        }}
-
-                        /* Top Decorative Bar instead of an Icon */
-                        .top-bar {{
-                            height: 6px;
-                            background-color: var(--primary);
-                            width: 100%;
-                        }}
-
-                        /* Welcome Section */
-                        .welcome-section {{
-                            padding: 40px 40px 30px;
-                            text-align: center;
-                        }}
-
-                        .welcome-title {{
-                            font-size: 28px;
-                            font-weight: 800;
-                            color: var(--text-main);
-                            letter-spacing: -0.5px;
-                            margin-bottom: 24px;
-                        }}
-
-                        .welcome-title-accent {{
-                            color: var(--primary);
-                        }}
-
-                        .welcome-content {{
-                            background-color: #ffffff;
-                            border: 1px solid #e2e8f0;
-                            padding: 32px 24px;
-                            border-radius: 16px;
-                            box-shadow: var(--shadow-sm);
-                            margin-bottom: 30px;
-                        }}
-
-                        .welcome-topic {{
-                            font-size: 20px;
-                            font-weight: 700;
-                            color: var(--primary);
-                            margin-bottom: 12px;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                        }}
-
-                        .welcome-text {{
-                            font-size: 15px;
-                            color: var(--text-muted);
-                            font-weight: 500;
-                            margin-bottom: 28px;
-                        }}
-
-                        /* Action Button */
-                        .cta-button {{
-                            display: inline-block;
-                            background-color: var(--primary);
-                            color: #ffffff;
-                            padding: 14px 32px;
-                            border-radius: 12px;
-                            text-decoration: none;
-                            font-weight: 600;
-                            font-size: 15px;
-                            transition: all 0.2s ease;
-                            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-                        }}
-
-                        .cta-button:hover {{
-                            background-color: #1d4ed8;
-                            transform: translateY(-1px);
-                            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-                        }}
-
-                        /* Info Section with an elegant border accent */
-                        .info-section {{
-                            background: linear-gradient(135deg, var(--primary-light) 0%, #f0fdf4 100%);
-                            margin: 0 40px 40px;
-                            padding: 24px;
-                            border-radius: 16px;
-                            border-left: 5px solid var(--primary);
-                            text-align: left;
-                        }}
-
-                        .info-title {{
-                            font-size: 16px;
-                            font-weight: 700;
-                            color: var(--text-main);
-                            margin-bottom: 6px;
-                        }}
-
-                        .info-text {{
-                            font-size: 14px;
-                            line-height: 1.6;
-                            color: #475569;
-                            font-weight: 500;
-                        }}
-
-                        /* Footer */
-                        .footer-section {{
-                            background-color: #f8fafc;
-                            padding: 32px 40px;
-                            text-align: center;
-                            border-top: 1px solid #e2e8f0;
-                        }}
-
-                        .footer-signature {{
-                            font-size: 14px;
-                            color: var(--text-muted);
-                            margin-bottom: 20px;
-                            font-weight: 500;
-                        }}
-
-                        .footer-team {{
-                            color: var(--primary);
-                            font-weight: 700;
-                        }}
-
-                        .social-links {{
-                            display: flex;
-                            justify-content: center;
-                            gap: 16px;
-                        }}
-
-                        .social-link {{
-                            font-size: 13px;
-                            font-weight: 600;
-                            text-decoration: none;
-                            color: var(--text-muted);
-                            transition: all 0.2s ease;
-                            padding: 6px 12px;
-                            border-radius: 6px;
-                            background-color: #ffffff;
-                            border: 1px solid #e2e8f0;
-                        }}
-
-                        .social-link:hover {{
-                            color: var(--primary);
-                            border-color: var(--primary);
-                            background-color: var(--primary-light);
-                        }}
-
-                        /* Responsive Breakpoints */
-                        @media (max-width: 600px) {{
-                            body {{
-                                padding: 16px 12px;
-                            }}
-                            .welcome-section {{
-                                padding: 24px 16px;
-                            }}
-                            .welcome-title {{
-                                font-size: 24px;
-                            }}
-                            .info-section {{
-                                margin: 0 16px 30px;
-                                padding: 20px;
-                            }}
-                            .footer-section {{
-                                padding: 24px 16px;
-                            }}
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='top - bar'></div>
-
-                                < div class='welcome-section'>
-                            <h1 class='welcome-title'>Welcome to<span class='welcome-title-accent'>Dars 5ososy</span></h1>
-                    
-                            <div class='welcome-content'>
-                                <div class='welcome-topic'>
-                                    {topic}
-                                </div>
-                                <p class='welcome-text'>{message}</p>
-
-                                < a href = '{link}' class= 'cta-button' >
-                                    Go to {topic}
-                                </ a >
-                            </ div >
-                        </ div >
-
-                        < div class= 'info-section' >
-                            < div class= 'info-title' > We're Glad You're Here!</div>
-                            <div class= 'info-text' > Dars 5ososy is designed to elevate your learning experience. Dive into engaging lessons, connect with expert tutors, and achieve your academic goals.</div>
-                        </div>
-
-                        <div class= 'footer-section' >
-                            < div class= 'footer-signature' >
-                                Best regards,<br>
-                                <span class= 'footer-team' > The Dars 5ososy Team</span>
-                            </div>
-                            <div class= 'social-links' >
-                                < a href = 'https://www.instagram.com/yourprofile' class= 'social-link' title = 'Instagram' > Instagram </ a >
-                                < a href = 'https://www.facebook.com/yourprofile' class= 'social-link' title = 'Facebook' > Facebook </ a >
-                                < a href = 'mailto:appvioteam@gmail.com' class= 'social-link' title = 'Email' > Email Contact </ a >
-                            </ div >
-                        </ div >
-                    </ div >
-                </ body >
-                </ html >
-            ";
+                                </td>
+                            </tr>
+                            
+                        </table>
+                        
+                    </td>
+                </tr>
+            </table>
+            
+        </body>
+        </html>
+    ";
 
             return template;
         }

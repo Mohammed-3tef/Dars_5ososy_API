@@ -10,8 +10,22 @@ namespace Dars_5ososy_API.Application.Mappings
     public class DomainProfile : Profile
     {
         public DomainProfile() {
-            CreateMap<User, UserDTO>().ReverseMap()
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "M" ? "Male" : "Female"));
+            CreateMap<User, UserDTO>()
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == 'M' ? "Male" : "Female"));
+
+            CreateMap<UserDTO, User>()
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => string.Equals(src.Gender, "Male", StringComparison.OrdinalIgnoreCase) ? 'M' : 'F'));
+
+            CreateMap<UpdatedUserDTO, User>()
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src =>
+                    string.Equals(src.Gender, "M", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(src.Gender, "Male", StringComparison.OrdinalIgnoreCase)
+                        ? 'M'
+                        : 'F'));
+
+            CreateMap<CreatedUserDTO, User>()
+                .IncludeBase<UpdatedUserDTO, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
             CreateMap<UserAddress, UserAddressDTO>().ReverseMap();
 
