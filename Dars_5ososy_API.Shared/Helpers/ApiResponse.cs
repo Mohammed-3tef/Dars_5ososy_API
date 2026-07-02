@@ -6,7 +6,7 @@
         public string Message { get; set; }
         public TResult Data { get; set; }
 
-        public static ApiResponse<TResult> Succeeded(TResult data, string message = "Request successful.")
+        public static ApiResponse<TResult> Successed(TResult data, string message = "Request successful.")
         {
             return new ApiResponse<TResult>
             {

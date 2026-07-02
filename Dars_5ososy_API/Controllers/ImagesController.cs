@@ -28,7 +28,7 @@ namespace Dars_5ososy_API.Controllers
             var entity = await _imageService.UploadImageAsync(image);
             if (entity == null)
                 return BadRequest(ApiResponse<int>.Fail("Image upload failed."));
-            return Ok(ApiResponse<int>.Succeeded(entity.Id, "Image uploaded successfully."));
+            return Ok(ApiResponse<int>.Successed(entity.Id, "Image uploaded successfully."));
         }
 
         /// <summary>Get images by user.</summary>
@@ -40,7 +40,7 @@ namespace Dars_5ososy_API.Controllers
             var images = await _imageService.GetImagesByUserAsync(username);
             if (images == null || !images.Any())
                 return NotFound(ApiResponse<List<Image>>.Fail("No images found for the specified user."));
-            return Ok(ApiResponse<List<Image>>.Succeeded(images, "Images retrieved successfully."));
+            return Ok(ApiResponse<List<Image>>.Successed(images, "Images retrieved successfully."));
         }
 
         /// <summary>Get an image by ID.</summary>
@@ -66,21 +66,22 @@ namespace Dars_5ososy_API.Controllers
             var updatedImage = await _imageService.UpdateImage(id, image);
             if (updatedImage == null)
                 return NotFound(ApiResponse<Image>.Fail("Image not found."));
-            return Ok(ApiResponse<Image>.Succeeded(updatedImage, "Image updated successfully."));
+            return Ok(ApiResponse<Image>.Successed(updatedImage, "Image updated successfully."));
         }
 
         /// <summary>Delete an existing image.</summary>
         /// <remarks>Only <c>Authorized users</c> can delete an image.</remarks>
-        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="204">Image deleted successfully.</response>
         /// <response code="404">Image not found.</response>
         [Authorize]
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteImage(int id)
         {
             var result = await _imageService.DeleteImageAsync(id);
             if (!result)
                 return NotFound(ApiResponse<object>.Fail("Image not found."));
-            return Ok(ApiResponse<bool>.Succeeded(result, "Image deleted successfully."));
+            return NoContent();
         }
     }
 }

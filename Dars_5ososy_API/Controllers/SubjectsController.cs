@@ -29,7 +29,7 @@ namespace Dars_5ososy_API.Controllers
             var subjects = await _subjectService.GetAllAsync();
             if (subjects == null || !subjects.Any())
                 return NotFound(ApiResponse<object>.Fail("No subjects found."));
-            return Ok(ApiResponse<List<SubjectDTO>>.Succeeded(subjects, "Subjects retrieved successfully."));
+            return Ok(ApiResponse<List<SubjectDTO>>.Successed(subjects, "Subjects retrieved successfully."));
         }
 
         /// <summary>Get a subject by name.</summary>
@@ -42,52 +42,66 @@ namespace Dars_5ososy_API.Controllers
             var subject = await _subjectService.GetByNameAsync(subjectName);
             if (subject == null)
                 return NotFound(ApiResponse<object>.Fail("Subject not found."));
-            return Ok(ApiResponse<SubjectDTO>.Succeeded(subject, "Subject retrieved successfully."));
+            return Ok(ApiResponse<SubjectDTO>.Successed(subject, "Subject retrieved successfully."));
         }
 
         /// <summary>Create a new subject.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can create a subject.</remarks>
         /// <response code="201">Subject created successfully.</response>
-        /// <response code="400">Subject with the same name already exists.</response>
+        /// <response code="400">Failed to create subject.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
+        /// <response code="409">Subject with the same name already exists.</response>
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<SubjectDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSubject(SubjectDTO subjectDto)
         {
+            var existingSubject = await _subjectService.GetByNameAsync(subjectDto.Name);
+            if (existingSubject != null)
+                return Conflict(ApiResponse<object>.Fail("Subject with the same name already exists."));
             var createdSubject = await _subjectService.CreateAsync(subjectDto);
             if (createdSubject == null)
-                return BadRequest(ApiResponse<object>.Fail("Subject with the same name already exists."));
-            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<SubjectDTO>.Succeeded(createdSubject, "Subject created successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to create subject."));
+            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<SubjectDTO>.Successed(createdSubject, "Subject created successfully."));
         }
 
         /// <summary>Update an existing subject.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can update a subject.</remarks>
         /// <response code="200">Subject updated successfully.</response>
+        /// <response code="400">Failed to update subject.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Subject not found.</response>
         [HttpPut("update")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<SubjectDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateSubject(SubjectDTO subjectDto)
         {
+            var existingSubject = await _subjectService.GetByNameAsync(subjectDto.Name);
+            if (existingSubject == null)
+                return NotFound(ApiResponse<object>.Fail("Subject not found."));
             var updatedSubject = await _subjectService.UpdateAsync(subjectDto);
             if (updatedSubject == null)
-                return NotFound(ApiResponse<object>.Fail("Subject not found."));
-            return Ok(ApiResponse<SubjectDTO>.Succeeded(updatedSubject, "Subject updated successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to update subject."));
+            return Ok(ApiResponse<SubjectDTO>.Successed(updatedSubject, "Subject updated successfully."));
         }
 
         /// <summary>Create a new favorite.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete a subject.</remarks>
-        /// <response code="200">Subject deleted successfully.</response>
-        /// <response code="404">Subject not found.</response>
+        /// <response code="204">Subject deleted successfully.</response>
+        /// <response code="400">Failed to delete subject.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
         [HttpDelete("delete/{id}")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteSubject(long id)
         {
             var isDeleted = await _subjectService.DeleteAsync(id);
             if (!isDeleted)
-                return NotFound(ApiResponse<object>.Fail("Subject not found."));
-            return Ok(ApiResponse<object>.Succeeded(null, "Subject deleted successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to delete subject."));
+            return NoContent();
         }
     }
 }

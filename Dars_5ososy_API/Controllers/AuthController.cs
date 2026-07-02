@@ -47,9 +47,10 @@ namespace Dars_5ososy_API.Controllers
         }
 
         /// <summary>Register a new user.</summary>
-        /// <response code="201">User registered successfully.</response>
+        /// <response code="200">User registered successfully.</response>
         /// <response code="400">User registration failed.</response>
         [HttpPost("register")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Register(CreatedUserDTO dto)
         {
             var result = await _authService.RegisterUserAsync(dto);
@@ -81,7 +82,7 @@ namespace Dars_5ososy_API.Controllers
 
             UserDTO userDTO = _mapper.Map<UserDTO>(user);
             ApiResponse<object> apiResponse = 
-                ApiResponse<object>.Succeeded(new{token, user = userDTO}, "User registered successfully. Please check your email to confirm.");
+                ApiResponse<object>.Successed(new{token, user = userDTO}, "User registered successfully. Please check your email to confirm.");
 
             return Ok(apiResponse);
         }
@@ -90,6 +91,7 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="200">Login successful.</response>
         /// <response code="401">Invalid email or password.</response>
         [HttpPost("login")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> LoginAsync(LoginDTO dto)
         {
             var user = await _userService.GetByEmailAsync(dto.Email);
@@ -104,7 +106,7 @@ namespace Dars_5ososy_API.Controllers
 
             var tokens = await _tokenService.CreateTokenPair(dto.Email);
 
-            ApiResponse<object> apiResponse = ApiResponse<object>.Succeeded(new
+            ApiResponse<object> apiResponse = ApiResponse<object>.Successed(new
             {
                 token = tokens.AccessToken,
                 refreshToken = tokens.RefreshToken,
@@ -119,6 +121,7 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="400">Refresh token is required.</response>
         /// <response code="401">Invalid refresh token.</response>
         [HttpPost("refresh")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Refresh(RefreshRequestDTO dto)
         {
             if (string.IsNullOrEmpty(dto?.RefreshToken))
@@ -138,7 +141,7 @@ namespace Dars_5ososy_API.Controllers
             var user = existing.User;
             var tokens = await _tokenService.CreateTokenPair(user.Email);
 
-            return Ok(ApiResponse<object>.Succeeded(new
+            return Ok(ApiResponse<object>.Successed(new
                 {
                     token = tokens.AccessToken,
                     refreshToken = tokens.RefreshToken
@@ -151,6 +154,7 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="400">Invalid email confirmation.</response>
         /// <response code="404">User not found.</response>
         [HttpGet("confirm-email")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             var user = await _userService.GetByEmailAsync(email);
@@ -163,7 +167,7 @@ namespace Dars_5ososy_API.Controllers
             if (!result)
                 return BadRequest(ApiResponse<object>.Fail("Invalid email confirmation"));
 
-            return Ok(ApiResponse<string>.Succeeded(user.Email, "Email confirmed successfully"));
+            return Ok(ApiResponse<string>.Successed(user.Email, "Email confirmed successfully"));
         }
 
         /// <summary>Initiate a password reset request.</summary>
@@ -172,12 +176,13 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="400">Invalid email address.</response>
         [Authorize]
         [HttpPost("forgot-password")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ForgotPassword(string email)
         {
             var user = await _userService.GetByEmailAsync(email);
 
             if (user == null)
-                return Ok(ApiResponse<object>.Succeeded(string.Empty, "If the email exists, a reset link has been sent.")); // don't expose users
+                return Ok(ApiResponse<object>.Successed(string.Empty, "If the email exists, a reset link has been sent.")); // don't expose users
 
             var token = await _authService.GeneratePasswordResetTokenAsync(user);
 
@@ -198,7 +203,7 @@ namespace Dars_5ososy_API.Controllers
             };
             await _emailService.SendEmailAsync(emailRequest);
 
-            return Ok(ApiResponse<string>.Succeeded(string.Empty, "Reset link sent"));
+            return Ok(ApiResponse<string>.Successed(string.Empty, "Reset link sent"));
         }
 
         /// <summary>Reset a user's password.</summary>
@@ -206,6 +211,7 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="400">Password reset failed.</response>
         /// <response code="404">User not found.</response>
         [HttpPost("reset-password")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPassword(ResetPasswordDTO dto)
         {
             var user = await _userService.GetByEmailAsync(dto.Email);
@@ -221,7 +227,30 @@ namespace Dars_5ososy_API.Controllers
             if (!result)
                 return BadRequest(ApiResponse<object>.Fail("Password reset failed"));
 
-            return Ok(ApiResponse<string>.Succeeded(string.Empty, "Password reset successful"));
+            return Ok(ApiResponse<string>.Successed(string.Empty, "Password reset successful"));
+        }
+
+        /// <summary>Get the details of the currently authenticated user.</summary>
+        /// <remarks>Only <c>Authorized users</c> can access this endpoint.</remarks>
+        /// <response code="200">User details retrieved successfully.</response>
+        /// <response code="401">User not authenticated.</response>
+        /// <response code="404">User not found.</response>
+        [Authorize]
+        [HttpGet("me")]
+        [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMe()
+        {
+            var username = User.Identity?.Name;
+
+            if (username == null)
+                return Unauthorized(ApiResponse<object>.Fail("User not authenticated"));
+
+            var user = await _userService.GetByUserNameAsync(username);
+
+            if (user == null)
+                return NotFound(ApiResponse<object>.Fail("User not found"));
+
+            return Ok(ApiResponse<UserDTO>.Successed(user, "User details retrieved successfully"));
         }
 
         /// <summary>Logout the current user.</summary>
@@ -230,6 +259,7 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="401">User not found.</response>
         [Authorize]
         [HttpPost("logout")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Logout()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -248,7 +278,7 @@ namespace Dars_5ososy_API.Controllers
 
             await _db.SaveChangesAsync();
 
-            return Ok(ApiResponse<string>.Succeeded(string.Empty, "Logged out successfully"));
+            return Ok(ApiResponse<string>.Successed(string.Empty, "Logged out successfully"));
         }
     }
 }

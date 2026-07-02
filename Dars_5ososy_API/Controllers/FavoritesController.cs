@@ -29,7 +29,7 @@ namespace Dars_5ososy_API.Controllers
             var Favorites = await _FavoriteService.GetAllAsync();
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found."));
-            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get favorites by student username.</summary>
@@ -43,7 +43,7 @@ namespace Dars_5ososy_API.Controllers
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified student."));
 
-            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get favorites by teacher username.</summary>
@@ -56,7 +56,7 @@ namespace Dars_5ososy_API.Controllers
             var Favorites = await _FavoriteService.GetByTeacherUsernameAsync(teacherUsername);
             if (Favorites == null || !Favorites.Any())
                 return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified teacher."));
-            return Ok(ApiResponse<List<FavoriteDTO>>.Succeeded(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get a favorite by student and teacher usernames.</summary>
@@ -70,39 +70,43 @@ namespace Dars_5ososy_API.Controllers
             if (Favorite == null)
                 return NotFound(ApiResponse<object>.Fail("No Favorite found for the specified student and teacher."));
 
-            return Ok(ApiResponse<FavoriteDTO>.Succeeded(Favorite, "Favorite retrieved successfully."));
+            return Ok(ApiResponse<FavoriteDTO>.Successed(Favorite, "Favorite retrieved successfully."));
         }
 
         /// <summary>Create a new favorite.</summary>
         /// <remarks>Only <c>Authorized users</c> can create a favorite.</remarks>
         /// <response code="201">Favorite created successfully.</response>
-        /// <response code="400">Favorite with the same details already exists.</response>
+        /// <response code="400">Failed to create favorite.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="409">Favorite with the same details already exists.</response>
         [Authorize]
         [HttpPost("create")]
         [ProducesResponseType(typeof(ApiResponse<FavoriteDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateFavorite(FavoriteDTO FavoriteDto)
         {
+            var existingFavorite = await _FavoriteService.GetByStudentAndTeacherAsync(FavoriteDto.StudentUsername, FavoriteDto.TeacherUsername);
+            if (existingFavorite != null)
+                return Conflict(ApiResponse<object>.Fail("Favorite with the same details already exists."));
             var createdFavorite = await _FavoriteService.CreateAsync(FavoriteDto);
             if (createdFavorite == null)
-                return BadRequest(ApiResponse<object>.Fail("Favorite with the same details already exists."));
-
-            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Succeeded(createdFavorite, "Favorite created successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to create favorite."));
+            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Successed(createdFavorite, "Favorite created successfully."));
         }
 
         /// <summary>Delete a favorite by student and teacher usernames.</summary>
         /// <remarks>Only <c>Authorized users</c> can delete a favorite.</remarks>
-        /// <response code="200">Favorite deleted successfully.</response>
+        /// <response code="204">Favorite deleted successfully.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="404">Favorite not found.</response>
         [Authorize]
         [HttpDelete("delete/{studentUsername}/{teacherUsername}")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteFavorite(string studentUsername, string teacherUsername)
         {
             var isDeleted = await _FavoriteService.DeleteAsync(studentUsername, teacherUsername);
             if (!isDeleted)
                 return NotFound(ApiResponse<object>.Fail("Favorite not found."));
-
-            return Ok(ApiResponse<object>.Succeeded(null, "Favorite deleted successfully."));
+            return NoContent();
         }
     }
 }

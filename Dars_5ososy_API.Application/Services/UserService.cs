@@ -16,7 +16,7 @@ namespace Dars_5ososy_API.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<List<UserDTO>> GetAllAsync()
+        public async Task<List<UserDTO>> GetAllStudentsAsync()
         {
             var users = await _userRepository.GetAllAsync();
             var filteredUsers = new List<UserDTO>();
@@ -24,10 +24,23 @@ namespace Dars_5ososy_API.Application.Services
             foreach (var user in users)
             {
                 var roles = await GetUserRole(user.UserName);
-                if (roles == null || !roles.Contains("Admin"))
-                {
+                if (roles.Contains("Student") && !roles.Contains("Admin"))
                     filteredUsers.Add(_mapper.Map<UserDTO>(user));
-                }
+            }
+
+            return filteredUsers;
+        }
+        
+        public async Task<List<UserDTO>> GetAllTeachersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            var filteredUsers = new List<UserDTO>();
+
+            foreach (var user in users)
+            {
+                var roles = await GetUserRole(user.UserName);
+                if (roles.Contains("Teacher") && !roles.Contains("Admin"))
+                    filteredUsers.Add(_mapper.Map<UserDTO>(user));
             }
 
             return filteredUsers;
@@ -36,7 +49,8 @@ namespace Dars_5ososy_API.Application.Services
         public async Task<UserDTO?> GetByUserNameAsync(string userName)
         {
             var user = await _userRepository.GetByUserNameAsync(userName);
-            if (user == null) return null;
+            if (user == null) 
+                return null;
             return _mapper.Map<UserDTO>(user);
         }
         
@@ -50,14 +64,16 @@ namespace Dars_5ososy_API.Application.Services
         public async Task<UserDTO?> GetByPhoneNumberAsync(string phoneNumber)
         {
             var user = await _userRepository.GetByPhoneNumberAsync(phoneNumber);
-            if (user == null) return null;
+            if (user == null) 
+                return null;
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<List<string>?> GetUserRole(string username)
         {
             var user = await _userRepository.GetByUserNameAsync(username);
-            if (user == null) return null;
+            if (user == null) 
+                return null;
             return await _userRepository.GetRolesAsync(user);
         }
 
@@ -65,7 +81,8 @@ namespace Dars_5ososy_API.Application.Services
         {
             var user = _mapper.Map<User>(createdUserDTO);
             var createdUser = await _userRepository.CreateAsync(user, password);
-            if (createdUser == null) return null;
+            if (createdUser == null) 
+                return null;
             return _mapper.Map<UserDTO>(createdUser);
         }
 
@@ -73,7 +90,8 @@ namespace Dars_5ososy_API.Application.Services
         {
             var user = _mapper.Map<User>(userDto);
             var updatedUser = await _userRepository.UpdateAsync(user);
-            if (updatedUser == null) return null;
+            if (updatedUser == null) 
+                return null;
             return _mapper.Map<UserDTO>(updatedUser);
         }
 

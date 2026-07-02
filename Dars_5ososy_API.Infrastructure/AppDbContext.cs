@@ -11,7 +11,6 @@ namespace Dars_5ososy_API.Infrastructure
         public DbSet<Governorate> Governorates { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
-        public DbSet<SlotAddress> SlotAddresses { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -20,6 +19,7 @@ namespace Dars_5ososy_API.Infrastructure
         public DbSet<EducationStage> EducationStages { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
         public DbSet<Image> Images { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -46,6 +46,21 @@ namespace Dars_5ososy_API.Infrastructure
             
             builder.Entity<Favorite>()
                 .HasKey(e => new { e.StudentId, e.TeacherId });
+            
+            builder.Entity<Booking>()
+                .HasKey(e => new { e.StudentId, e.TeacherId, e.AvailabilitySlotId });
+
+            builder.Entity<Booking>()
+                .HasOne(b => b.Student)
+                .WithMany()
+                .HasForeignKey(b => b.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Booking>()
+                .HasOne(b => b.Teacher)
+                .WithMany()
+                .HasForeignKey(b => b.TeacherId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Favorite>()
                 .HasOne(f => f.Student)

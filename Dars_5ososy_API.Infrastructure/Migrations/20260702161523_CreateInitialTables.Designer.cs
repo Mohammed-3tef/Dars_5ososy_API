@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dars_5ososy_API.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260628170856_CreateInitialTables")]
+    [Migration("20260702161523_CreateInitialTables")]
     partial class CreateInitialTables
     {
         /// <inheritdoc />
@@ -68,6 +68,13 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("AreaId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -80,19 +87,27 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.Property<int>("EducationSystemId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("MaxStudents")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<long>("TeacherId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
 
                     b.HasIndex("EducationStageId");
 
@@ -101,6 +116,29 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("AvailabilitySlots");
+                });
+
+            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Booking", b =>
+                {
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeacherId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AvailabilitySlotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StudentId", "TeacherId", "AvailabilitySlotId");
+
+                    b.HasIndex("AvailabilitySlotId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.EducationStage", b =>
@@ -426,6 +464,42 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Province", b =>
                 {
                     b.Property<long>("Id")
@@ -554,33 +628,6 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.SlotAddress", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("AreaId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("AvailabilitySlotId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AreaId");
-
-                    b.HasIndex("AvailabilitySlotId");
-
-                    b.ToTable("SlotAddresses");
-                });
-
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Subject", b =>
                 {
                     b.Property<long>("Id")
@@ -609,6 +656,206 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Subjects");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Code = "ARA",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2145),
+                            Description = "منهج اللغة العربية واكتساب المهارات اللغوية والنحوية",
+                            Name = "اللغة العربية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2150)
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Code = "ENG",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2154),
+                            Description = "منهج اللغة الإنجليزية للاتصال والمحادثة والقواعد",
+                            Name = "اللغة الإنجليزية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2154)
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Code = "SOC",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2156),
+                            Description = "منهج الجغرافيا والتاريخ ومبادئ المواطنة",
+                            Name = "الدراسات الاجتماعية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2156)
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Code = "FRN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2157),
+                            Description = "منهج اللغة الأجنبية الثانية - الفرنسية",
+                            Name = "اللغة الفرنسية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2157)
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Code = "GER",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2158),
+                            Description = "منهج اللغة الأجنبية الثانية - الألمانية",
+                            Name = "اللغة الألمانية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2159)
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            Code = "ITA",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2160),
+                            Description = "منهج اللغة الأجنبية الثانية - الإيطالية",
+                            Name = "اللغة الإيطالية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2160)
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            Code = "REL",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2161),
+                            Description = "منهج التربية الدينية الإسلامية والمسيحية",
+                            Name = "التربية الدينية",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2162)
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            Code = "MAT-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2163),
+                            Description = "منهج الرياضيات والحساب باللغة العربية",
+                            Name = "الرياضيات",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2163)
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            Code = "SCI-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2164),
+                            Description = "منهج العلوم العامة باللغة العربية",
+                            Name = "العلوم",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2164)
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            Code = "PHY-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2165),
+                            Description = "منهج الفيزياء المتقدمة باللغة العربية",
+                            Name = "الفيزياء",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2166)
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            Code = "CHE-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2167),
+                            Description = "منهج الكيمياء والتفاعلات باللغة العربية",
+                            Name = "الكيمياء",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2167)
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            Code = "BIO-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2168),
+                            Description = "منهج علم الأحياء والبيئة باللغة العربية",
+                            Name = "الأحياء",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2169)
+                        },
+                        new
+                        {
+                            Id = 13L,
+                            Code = "GEO-AR",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2170),
+                            Description = "منهج الجيولوجيا وعلوم الأرض باللغة العربية",
+                            Name = "الجيولوجيا",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2170)
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            Code = "MAT-EN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2171),
+                            Description = "Mathematics and algebra syllabus in English",
+                            Name = "Math",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2172)
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            Code = "SCI-EN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2173),
+                            Description = "General Science syllabus in English",
+                            Name = "Science",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2177)
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            Code = "PHY-EN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2178),
+                            Description = "Advanced Physics concepts and mechanics in English",
+                            Name = "Physics",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2178)
+                        },
+                        new
+                        {
+                            Id = 17L,
+                            Code = "CHE-EN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2179),
+                            Description = "Organic and inorganic Chemistry syllabus in English",
+                            Name = "Chemistry",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2180)
+                        },
+                        new
+                        {
+                            Id = 18L,
+                            Code = "BIO-EN",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2181),
+                            Description = "Living organisms and Biology syllabus in English",
+                            Name = "Biology",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2181)
+                        },
+                        new
+                        {
+                            Id = 19L,
+                            Code = "HIS",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2182),
+                            Description = "منهج التاريخ والحضارات للمرحلة الثانوية",
+                            Name = "التاريخ",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2183)
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            Code = "GEO",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2184),
+                            Description = "منهج الجغرافيا السياسية والطبيعية للمرحلة الثانوية",
+                            Name = "الجغرافيا",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2184)
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            Code = "PHI",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2185),
+                            Description = "مبادئ التفكير الفلسفي والمنطق الصوري",
+                            Name = "الفلسفة والمنطق",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2185)
+                        },
+                        new
+                        {
+                            Id = 22L,
+                            Code = "PSY",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2187),
+                            Description = "دراسة السلوك الإنساني ومبادئ علم الاجتماع",
+                            Name = "علم النفس والاجتماع",
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2187)
+                        });
                 });
 
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.TeacherSubject", b =>
@@ -726,8 +973,8 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             BirthDate = new DateOnly(1990, 1, 1),
-                            ConcurrencyStamp = "0a37ad44-d728-4204-a5b1-4149f8b4c0e2",
-                            CreatedAt = new DateTime(2026, 6, 28, 17, 8, 55, 753, DateTimeKind.Utc).AddTicks(5124),
+                            ConcurrencyStamp = "92cfbf6d-4931-4c6b-9321-56e21e5de86c",
+                            CreatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 736, DateTimeKind.Utc).AddTicks(9258),
                             Email = "mohammed.atef.abdelkader@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "System",
@@ -737,9 +984,9 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                             NationalId = 0L,
                             NormalizedEmail = "MOHAMMED.ATEF.ABDELKADER@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAENxNmZhhS1g7c1OZWoCf2nBRZiAVdRBoNPeOJuKUEhp55TzvB/4tWj7rFkcghUA66A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECguFO8hdBUbQoMvqimkES1sXQFffSrMHdxngOKnpYTa3a4ab0XIAISc2a/PJfdgog==",
                             PhoneNumberConfirmed = false,
-                            UpdatedAt = new DateTime(2026, 6, 28, 17, 8, 55, 753, DateTimeKind.Utc).AddTicks(5127),
+                            UpdatedAt = new DateTime(2026, 7, 2, 16, 15, 22, 736, DateTimeKind.Utc).AddTicks(9262),
                             UserName = "admin"
                         });
                 });
@@ -944,6 +1191,12 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
 
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.AvailabilitySlot", b =>
                 {
+                    b.HasOne("Dars_5ososy_API.Domain.Entities.Area", "Area")
+                        .WithMany()
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Dars_5ososy_API.Domain.Entities.EducationStage", "EducationStage")
                         .WithMany()
                         .HasForeignKey("EducationStageId")
@@ -962,9 +1215,38 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Area");
+
                     b.Navigation("EducationStage");
 
                     b.Navigation("EducationSystem");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Booking", b =>
+                {
+                    b.HasOne("Dars_5ososy_API.Domain.Entities.AvailabilitySlot", "AvailabilitySlot")
+                        .WithMany()
+                        .HasForeignKey("AvailabilitySlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dars_5ososy_API.Domain.Entities.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Dars_5ososy_API.Domain.Entities.User", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AvailabilitySlot");
+
+                    b.Navigation("Student");
 
                     b.Navigation("Teacher");
                 });
@@ -999,6 +1281,17 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.Image", b =>
+                {
+                    b.HasOne("Dars_5ososy_API.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Dars_5ososy_API.Domain.Entities.User", "User")
@@ -1027,25 +1320,6 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.SlotAddress", b =>
-                {
-                    b.HasOne("Dars_5ososy_API.Domain.Entities.Area", "Area")
-                        .WithMany()
-                        .HasForeignKey("AreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Dars_5ososy_API.Domain.Entities.AvailabilitySlot", "AvailabilitySlot")
-                        .WithMany()
-                        .HasForeignKey("AvailabilitySlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Area");
-
-                    b.Navigation("AvailabilitySlot");
                 });
 
             modelBuilder.Entity("Dars_5ososy_API.Domain.Entities.TeacherSubject", b =>

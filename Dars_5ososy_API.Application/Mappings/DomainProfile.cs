@@ -12,7 +12,13 @@ namespace Dars_5ososy_API.Application.Mappings
             CreateMap<User, UserDTO>().ReverseMap()
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "M" ? "Male" : "Female"));
 
+            CreateMap<UserAddress, UserAddressDTO>().ReverseMap();
+
             CreateMap<SubjectDTO, Subject>().ReverseMap();
+            CreateMap<TeacherSubjectDTO, TeacherSubject>().ReverseMap()
+                .ForMember(dest => dest.TeacherUsername, opt => opt.MapFrom(src => src.Teacher.UserName))
+                .ForMember(dest => dest.SubjectCode, opt => opt.MapFrom(src => src.Subject.Code));
+
             CreateMap<EducationSystemDTO, EducationSystem>().ReverseMap();
             CreateMap<EducationStageDTO, EducationStage>().ReverseMap();
 
@@ -27,6 +33,8 @@ namespace Dars_5ososy_API.Application.Mappings
             CreateMap<ProvinceDTO, Province>().ReverseMap();
             CreateMap<GovernorateDTO, Governorate>().ReverseMap();
             CreateMap<AreaDTO, Area>().ReverseMap();
+
+            CreateMap<BookingDTO, Booking>().ReverseMap();
         }
     }
 }

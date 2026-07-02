@@ -29,7 +29,7 @@ namespace Dars_5ososy_API.Controllers
             var educationStages = await _educationStageService.GetAllAsync();
             if (educationStages == null || !educationStages.Any())
                 return NotFound(ApiResponse<object>.Fail("No education stages found."));
-            return Ok(ApiResponse<List<EducationStageDTO>>.Succeeded(educationStages, "Education stages retrieved successfully."));
+            return Ok(ApiResponse<List<EducationStageDTO>>.Successed(educationStages, "Education stages retrieved successfully."));
         }
 
         /// <summary>Get an education stage by its name.</summary>
@@ -42,52 +42,66 @@ namespace Dars_5ososy_API.Controllers
             var educationStage = await _educationStageService.GetByNameAsync(educationStageName);
             if (educationStage == null)
                 return NotFound(ApiResponse<object>.Fail("Education stage not found."));
-            return Ok(ApiResponse<EducationStageDTO>.Succeeded(educationStage, "Education stage retrieved successfully."));
+            return Ok(ApiResponse<EducationStageDTO>.Successed(educationStage, "Education stage retrieved successfully."));
         }
 
         /// <summary>Create a new education stage.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can create an education stage.</remarks>
         /// <response code="201">Education stage created successfully.</response>
         /// <response code="400">Education stage with the same name already exists.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
+        /// <response code="409">Education stage with the same name already exists.</response>
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<EducationStageDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateEducationStage(EducationStageDTO educationStageDto)
         {
+            var existingEducationStage = await _educationStageService.GetByNameAsync(educationStageDto.EnglishName);
+            if (existingEducationStage != null)
+                return Conflict(ApiResponse<object>.Fail("Education stage with the same name already exists."));
             var createdEducationStage = await _educationStageService.CreateAsync(educationStageDto);
             if (createdEducationStage == null)
                 return BadRequest(ApiResponse<object>.Fail("Education stage with the same name already exists."));
-            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<EducationStageDTO>.Succeeded(createdEducationStage, "Education stage created successfully."));
+            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<EducationStageDTO>.Successed(createdEducationStage, "Education stage created successfully."));
         }
 
         /// <summary>Update an existing education stage.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can update an education stage.</remarks>
         /// <response code="200">Education stage updated successfully.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Education stage not found.</response>
+        /// <response code="409">Education stage with the same name already exists.</response>
         [HttpPut("update")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<EducationStageDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateEducationStage(EducationStageDTO educationStageDto)
         {
+            var existingEducationStage = await _educationStageService.GetByNameAsync(educationStageDto.EnglishName);
+            if (existingEducationStage != null)
+                return Conflict(ApiResponse<object>.Fail("Education stage with the same name already exists."));
             var updatedEducationStage = await _educationStageService.UpdateAsync(educationStageDto);
             if (updatedEducationStage == null)
                 return NotFound(ApiResponse<object>.Fail("Education stage not found."));
-            return Ok(ApiResponse<EducationStageDTO>.Succeeded(updatedEducationStage, "Education stage updated successfully."));
+            return Ok(ApiResponse<EducationStageDTO>.Successed(updatedEducationStage, "Education stage updated successfully."));
         }
 
         /// <summary>Delete an education stage.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete an education stage.</remarks>
-        /// <response code="200">Education stage deleted successfully.</response>
-        /// <response code="404">Education stage not found.</response>
+        /// <response code="204">Education stage deleted successfully.</response>
+        /// <response code="400">Failed to delete education stage.</response>
+        /// <response code="401">Unauthorized. User is not authenticated.</response>
+        /// <response code="403">Forbidden. User does not have the required role.</response>
         [HttpDelete("delete/{id}")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteEducationStage(long id)
         {
             var isDeleted = await _educationStageService.DeleteAsync(id);
             if (!isDeleted)
-                return NotFound(ApiResponse<object>.Fail("Education stage not found."));
-            return Ok(ApiResponse<object>.Succeeded(null, "Education stage deleted successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to delete education stage."));
+            return NoContent();
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Dars_5ososy_API.Infrastructure
             AdminSeed.Seed(_modelBuilder);
             EducationStageSeed.Seed(_modelBuilder);
             EducationSystemSeed.Seed(_modelBuilder);
+            SubjectSeed.Seed(_modelBuilder);
         }
     }
 }

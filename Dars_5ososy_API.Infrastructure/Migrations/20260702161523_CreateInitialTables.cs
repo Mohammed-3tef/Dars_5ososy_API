@@ -164,44 +164,6 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AvailabilitySlots",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TeacherId = table.Column<long>(type: "bigint", nullable: false),
-                    DayOfWeek = table.Column<int>(type: "int", nullable: false),
-                    EducationStageId = table.Column<int>(type: "int", nullable: false),
-                    EducationSystemId = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AvailabilitySlots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AvailabilitySlots_EducationStages_EducationStageId",
-                        column: x => x.EducationStageId,
-                        principalTable: "EducationStages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AvailabilitySlots_EducationSystems_EducationSystemId",
-                        column: x => x.EducationSystemId,
-                        principalTable: "EducationSystems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AvailabilitySlots_Users_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Favorites",
                 columns: table => new
                 {
@@ -222,6 +184,30 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                         column: x => x.TeacherId,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileSize = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -405,28 +391,49 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SlotAddresses",
+                name: "AvailabilitySlots",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AvailabilitySlotId = table.Column<long>(type: "bigint", nullable: false),
+                    TeacherId = table.Column<long>(type: "bigint", nullable: false),
+                    DayOfWeek = table.Column<int>(type: "int", nullable: false),
+                    EducationStageId = table.Column<int>(type: "int", nullable: false),
+                    EducationSystemId = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AreaId = table.Column<long>(type: "bigint", nullable: false)
+                    AreaId = table.Column<long>(type: "bigint", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MaxStudents = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SlotAddresses", x => x.Id);
+                    table.PrimaryKey("PK_AvailabilitySlots", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SlotAddresses_Areas_AreaId",
+                        name: "FK_AvailabilitySlots_Areas_AreaId",
                         column: x => x.AreaId,
                         principalTable: "Areas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SlotAddresses_AvailabilitySlots_AvailabilitySlotId",
-                        column: x => x.AvailabilitySlotId,
-                        principalTable: "AvailabilitySlots",
+                        name: "FK_AvailabilitySlots_EducationStages_EducationStageId",
+                        column: x => x.EducationStageId,
+                        principalTable: "EducationStages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AvailabilitySlots_EducationSystems_EducationSystemId",
+                        column: x => x.EducationSystemId,
+                        principalTable: "EducationSystems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AvailabilitySlots_Users_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -456,6 +463,36 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    StudentId = table.Column<long>(type: "bigint", nullable: false),
+                    TeacherId = table.Column<long>(type: "bigint", nullable: false),
+                    AvailabilitySlotId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => new { x.StudentId, x.TeacherId, x.AvailabilitySlotId });
+                    table.ForeignKey(
+                        name: "FK_Bookings_AvailabilitySlots_AvailabilitySlotId",
+                        column: x => x.AvailabilitySlotId,
+                        principalTable: "AvailabilitySlots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Users_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Bookings_Users_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -504,9 +541,38 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Subjects",
+                columns: new[] { "Id", "Code", "CreatedAt", "Description", "Name", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1L, "ARA", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2145), "منهج اللغة العربية واكتساب المهارات اللغوية والنحوية", "اللغة العربية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2150) },
+                    { 2L, "ENG", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2154), "منهج اللغة الإنجليزية للاتصال والمحادثة والقواعد", "اللغة الإنجليزية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2154) },
+                    { 3L, "SOC", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2156), "منهج الجغرافيا والتاريخ ومبادئ المواطنة", "الدراسات الاجتماعية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2156) },
+                    { 4L, "FRN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2157), "منهج اللغة الأجنبية الثانية - الفرنسية", "اللغة الفرنسية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2157) },
+                    { 5L, "GER", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2158), "منهج اللغة الأجنبية الثانية - الألمانية", "اللغة الألمانية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2159) },
+                    { 6L, "ITA", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2160), "منهج اللغة الأجنبية الثانية - الإيطالية", "اللغة الإيطالية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2160) },
+                    { 7L, "REL", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2161), "منهج التربية الدينية الإسلامية والمسيحية", "التربية الدينية", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2162) },
+                    { 8L, "MAT-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2163), "منهج الرياضيات والحساب باللغة العربية", "الرياضيات", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2163) },
+                    { 9L, "SCI-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2164), "منهج العلوم العامة باللغة العربية", "العلوم", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2164) },
+                    { 10L, "PHY-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2165), "منهج الفيزياء المتقدمة باللغة العربية", "الفيزياء", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2166) },
+                    { 11L, "CHE-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2167), "منهج الكيمياء والتفاعلات باللغة العربية", "الكيمياء", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2167) },
+                    { 12L, "BIO-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2168), "منهج علم الأحياء والبيئة باللغة العربية", "الأحياء", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2169) },
+                    { 13L, "GEO-AR", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2170), "منهج الجيولوجيا وعلوم الأرض باللغة العربية", "الجيولوجيا", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2170) },
+                    { 14L, "MAT-EN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2171), "Mathematics and algebra syllabus in English", "Math", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2172) },
+                    { 15L, "SCI-EN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2173), "General Science syllabus in English", "Science", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2177) },
+                    { 16L, "PHY-EN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2178), "Advanced Physics concepts and mechanics in English", "Physics", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2178) },
+                    { 17L, "CHE-EN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2179), "Organic and inorganic Chemistry syllabus in English", "Chemistry", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2180) },
+                    { 18L, "BIO-EN", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2181), "Living organisms and Biology syllabus in English", "Biology", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2181) },
+                    { 19L, "HIS", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2182), "منهج التاريخ والحضارات للمرحلة الثانوية", "التاريخ", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2183) },
+                    { 20L, "GEO", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2184), "منهج الجغرافيا السياسية والطبيعية للمرحلة الثانوية", "الجغرافيا", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2184) },
+                    { 21L, "PHI", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2185), "مبادئ التفكير الفلسفي والمنطق الصوري", "الفلسفة والمنطق", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2185) },
+                    { 22L, "PSY", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2187), "دراسة السلوك الإنساني ومبادئ علم الاجتماع", "علم النفس والاجتماع", new DateTime(2026, 7, 2, 16, 15, 22, 820, DateTimeKind.Utc).AddTicks(2187) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessFailedCount", "Bio", "BirthDate", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NationalId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhotoUrl", "SecurityStamp", "UpdatedAt", "UserName" },
-                values: new object[] { 1L, 0, null, new DateOnly(1990, 1, 1), "0a37ad44-d728-4204-a5b1-4149f8b4c0e2", new DateTime(2026, 6, 28, 17, 8, 55, 753, DateTimeKind.Utc).AddTicks(5124), "mohammed.atef.abdelkader@gmail.com", true, "System", "M", "Administrator", false, null, 0L, "MOHAMMED.ATEF.ABDELKADER@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAENxNmZhhS1g7c1OZWoCf2nBRZiAVdRBoNPeOJuKUEhp55TzvB/4tWj7rFkcghUA66A==", null, false, null, null, new DateTime(2026, 6, 28, 17, 8, 55, 753, DateTimeKind.Utc).AddTicks(5127), "admin" });
+                values: new object[] { 1L, 0, null, new DateOnly(1990, 1, 1), "92cfbf6d-4931-4c6b-9321-56e21e5de86c", new DateTime(2026, 7, 2, 16, 15, 22, 736, DateTimeKind.Utc).AddTicks(9258), "mohammed.atef.abdelkader@gmail.com", true, "System", "M", "Administrator", false, null, 0L, "MOHAMMED.ATEF.ABDELKADER@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAECguFO8hdBUbQoMvqimkES1sXQFffSrMHdxngOKnpYTa3a4ab0XIAISc2a/PJfdgog==", null, false, null, null, new DateTime(2026, 7, 2, 16, 15, 22, 736, DateTimeKind.Utc).AddTicks(9262), "admin" });
 
             migrationBuilder.InsertData(
                 table: "Governorates",
@@ -558,6 +624,11 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 column: "GovernorateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AvailabilitySlots_AreaId",
+                table: "AvailabilitySlots",
+                column: "AreaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AvailabilitySlots_EducationStageId",
                 table: "AvailabilitySlots",
                 column: "EducationStageId");
@@ -573,6 +644,16 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_AvailabilitySlotId",
+                table: "Bookings",
+                column: "AvailabilitySlotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_TeacherId",
+                table: "Bookings",
+                column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Favorites_TeacherId",
                 table: "Favorites",
                 column: "TeacherId");
@@ -581,6 +662,11 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 name: "IX_Governorates_ProvinceId",
                 table: "Governorates",
                 column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_UserId",
+                table: "Images",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -608,16 +694,6 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SlotAddresses_AreaId",
-                table: "SlotAddresses",
-                column: "AreaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SlotAddresses_AvailabilitySlotId",
-                table: "SlotAddresses",
-                column: "AvailabilitySlotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeacherSubjects_SubjectId",
@@ -666,7 +742,13 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Bookings");
+
+            migrationBuilder.DropTable(
                 name: "Favorites");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
@@ -676,9 +758,6 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "SlotAddresses");
 
             migrationBuilder.DropTable(
                 name: "TeacherSubjects");
@@ -705,10 +784,10 @@ namespace Dars_5ososy_API.Infrastructure.Migrations
                 name: "Subjects");
 
             migrationBuilder.DropTable(
-                name: "Areas");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Areas");
 
             migrationBuilder.DropTable(
                 name: "EducationStages");

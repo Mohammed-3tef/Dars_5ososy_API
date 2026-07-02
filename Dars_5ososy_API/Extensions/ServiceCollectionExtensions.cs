@@ -12,11 +12,15 @@ namespace Dars_5ososy_API.Extensions
             //services.AddScoped(typeof(IGenericRepository<>));
 
             services.AddScoped<UserRepository>();
+            services.AddScoped<UserAddressRepository>();
+            services.AddScoped<AvailabilitySlotRepository>();
             services.AddScoped<SubjectRepository>();
+            services.AddScoped<TeacherSubjectRepository>();
             services.AddScoped<EducationSystemRepository>();
             services.AddScoped<EducationStageRepository>();
             services.AddScoped<ReviewRepository>();
             services.AddScoped<FavoriteRepository>();
+            services.AddScoped<BookingRepository>();
             services.AddScoped<ProvinceRepository>();
             services.AddScoped<GovernorateRepository>();
             services.AddScoped<AreaRepository>();
@@ -26,11 +30,15 @@ namespace Dars_5ososy_API.Extensions
             services.AddScoped<AuthService>();
 
             services.AddScoped<UserService>();
+            services.AddScoped<UserAddressService>();
+            services.AddScoped<AvailabilitySlotService>();
             services.AddScoped<SubjectService>();
+            services.AddScoped<TeacherSubjectService>();
             services.AddScoped<EducationSystemService>();
             services.AddScoped<EducationStageService>();
             services.AddScoped<ReviewService>();
             services.AddScoped<FavoriteService>();
+            services.AddScoped<BookingService>();
             services.AddScoped<ProvinceService>();
             services.AddScoped<GovernorateService>();
             services.AddScoped<AreaService>();

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-
-namespace Dars_5ososy_API.Domain.Entities
+﻿namespace Dars_5ososy_API.Domain.Entities
 {
     public class Subject
     {

@@ -20,8 +20,7 @@ namespace Dars_5ososy_API.Application.Services
         public async Task<List<SubjectDTO>> GetAllAsync()
         {
             var subjects = await _subjectRepository.GetAllAsync();
-            var filteredSubjects = new List<SubjectDTO>();
-            return _mapper.Map<List<SubjectDTO>>(filteredSubjects);
+            return _mapper.Map<List<SubjectDTO>>(subjects);
         }
 
         public async Task<SubjectDTO?> GetByNameAsync(string subjectName)

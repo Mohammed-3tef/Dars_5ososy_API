@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dars_5ososy_API.Domain.Entities
 {
     public class Booking
     {
-        public long Id { get; set; }
         public long StudentId { get; set; }
         [ForeignKey(nameof(StudentId))]
         public User Student { get; set; }

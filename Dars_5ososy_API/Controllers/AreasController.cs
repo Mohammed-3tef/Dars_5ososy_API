@@ -29,7 +29,7 @@ namespace Dars_5ososy_API.Controllers
             var Areas = await _AreaService.GetAllAsync();
             if (Areas == null || !Areas.Any())
                 return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Succeeded(Areas, "Areas retrieved successfully."));
+            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Province Arabic Name.</summary>
@@ -43,7 +43,7 @@ namespace Dars_5ososy_API.Controllers
             var Areas = await _AreaService.GetAllByProvinceArabicNameAsync(provinceArabicName);
             if (Areas == null || !Areas.Any())
                 return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Succeeded(Areas, "Areas retrieved successfully."));
+            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Province English Name.</summary>
@@ -57,7 +57,7 @@ namespace Dars_5ososy_API.Controllers
             var Areas = await _AreaService.GetAllByProvinceEnglishNameAsync(provinceEnglishName);
             if (Areas == null || !Areas.Any())
                 return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Succeeded(Areas, "Areas retrieved successfully."));
+            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Governorate Arabic Name.</summary>
@@ -71,7 +71,7 @@ namespace Dars_5ososy_API.Controllers
             var Areas = await _AreaService.GetAllByGovernorateArabicNameAsync(governorateArabicName);
             if (Areas == null || !Areas.Any())
                 return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Succeeded(Areas, "Areas retrieved successfully."));
+            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Governorate English Name.</summary>
@@ -85,7 +85,7 @@ namespace Dars_5ososy_API.Controllers
             var Areas = await _AreaService.GetAllByGovernorateEnglishNameAsync(governorateEnglishName);
             if (Areas == null || !Areas.Any())
                 return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Succeeded(Areas, "Areas retrieved successfully."));
+            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
         }
         
         /// <summary>Gets an Area by Arabic Name.</summary>
@@ -101,7 +101,7 @@ namespace Dars_5ososy_API.Controllers
             if (Area == null)
                 return NotFound(ApiResponse<object>.Fail("Area not found."));
 
-            return Ok(ApiResponse<AreaDTO>.Succeeded(Area, "Area retrieved successfully."));
+            return Ok(ApiResponse<AreaDTO>.Successed(Area, "Area retrieved successfully."));
         }
 
         /// <summary>Gets an Area by English Name.</summary>
@@ -117,25 +117,28 @@ namespace Dars_5ososy_API.Controllers
             if (Area == null)
                 return NotFound(ApiResponse<object>.Fail("Area not found."));
 
-            return Ok(ApiResponse<AreaDTO>.Succeeded(Area, "Area retrieved successfully."));
+            return Ok(ApiResponse<AreaDTO>.Successed(Area, "Area retrieved successfully."));
         }
 
         /// <summary>Creates a new Area.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can create a new area.</remarks>
         /// <param name="AreaDto"></param>
         /// <response code="201">Area created successfully.</response>
-        /// <response code="400">Area with the same name already exists.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
+        /// <response code="409">Area with the same name already exists.</response>
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<AreaDTO>), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateArea(AreaDTO AreaDto)
         {
+            var existingArea = await _AreaService.GetByArabicNameAsync(AreaDto.ArabicName);
+            if (existingArea == null)
+                return Conflict(ApiResponse<object>.Fail("Area with the same name already exists."));
             var createdArea = await _AreaService.CreateAsync(AreaDto);
             if (createdArea == null)
                 return BadRequest(ApiResponse<object>.Fail("Area with the same name already exists."));
-            return CreatedAtAction(nameof(GetAreaByArabicName), new { AreaArabicName = createdArea.ArabicName }, ApiResponse<AreaDTO>.Succeeded(createdArea, "Area created successfully."));
+            return CreatedAtAction(nameof(GetAreaByArabicName), new { AreaArabicName = createdArea.ArabicName }, ApiResponse<AreaDTO>.Successed(createdArea, "Area created successfully."));
         }
 
         /// <summary>Updates an existing Area by its Arabic or English name.</summary>
@@ -143,54 +146,64 @@ namespace Dars_5ososy_API.Controllers
         /// <param name="AreaDto"></param>
         /// <response code="200">Area updated successfully.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
-        /// <response code="404">Area not found.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
+        /// <response code="404">Area not found.</response>
         [HttpPut("update")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<AreaDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateArea(AreaDTO AreaDto)
         {
+            var existingArea = await _AreaService.GetByArabicNameAsync(AreaDto.ArabicName);
+            if (existingArea == null)
+                return NotFound(ApiResponse<object>.Fail("Area not found."));
             var updatedArea = await _AreaService.UpdateAsync(AreaDto);
             if (updatedArea == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
-
-            return Ok(ApiResponse<AreaDTO>.Succeeded(updatedArea, "Area updated successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to update area."));
+            return Ok(ApiResponse<AreaDTO>.Successed(updatedArea, "Area updated successfully."));
         }
 
         /// <summary>Deletes an Area by its Arabic name.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete an Area.</remarks>
         /// <param name="AreaArabicName"></param>
-        /// <response code="200">Area deleted successfully.</response>
+        /// <response code="204">Area deleted successfully.</response>
+        /// <response code="400">Failed to delete area.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Area not found.</response>
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete-by-arabic-name/{AreaArabicName}")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteAreaByArabicName(string AreaArabicName)
         {
+            var existingArea = await _AreaService.GetByArabicNameAsync(AreaArabicName);
+            if (existingArea == null)
+                return NotFound(ApiResponse<object>.Fail("Area not found."));
             var isDeleted = await _AreaService.DeleteByArabicNameAsync(AreaArabicName);
             if (!isDeleted)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
-            return Ok(ApiResponse<object>.Succeeded(null, "Area deleted successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to delete area."));
+            return NoContent();
         }
 
         /// <summary>Deletes an Area by its English name.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete an Area.</remarks>
         /// <param name="AreaEnglishName"></param>
-        /// <response code="200">Area deleted successfully.</response>
+        /// <response code="204">Area deleted successfully.</response>
+        /// <response code="400">Failed to delete area.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Area not found.</response>
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete-by-english-name/{AreaEnglishName}")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteAreaByEnglishName(string AreaEnglishName)
         {
+            var existingArea = await _AreaService.GetByEnglishNameAsync(AreaEnglishName);
+            if (existingArea == null)
+                return NotFound(ApiResponse<object>.Fail("Area not found."));
             var isDeleted = await _AreaService.DeleteByEnglishNameAsync(AreaEnglishName);
             if (!isDeleted)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
-            return Ok(ApiResponse<object>.Succeeded(null, "Area deleted successfully."));
+                return BadRequest(ApiResponse<object>.Fail("Failed to delete area."));
+            return NoContent();
         }
     }
 }

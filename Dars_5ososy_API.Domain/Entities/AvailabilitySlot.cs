@@ -19,8 +19,14 @@ namespace Dars_5ososy_API.Domain.Entities
         [ForeignKey(nameof(EducationSystemId))]
         public EducationSystem EducationSystem { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public string Address { get; set; }
+
+        public long AreaId { get; set; }
+        [ForeignKey(nameof(AreaId))]
+        public Area Area { get; set; }
+
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         public bool IsActive { get; set; } = true;
         public int MaxStudents { get; set; }
         public decimal Price { get; set; }
