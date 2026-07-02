@@ -24,6 +24,7 @@ namespace Dars_5ososy_API.Extensions
             services.AddScoped<ProvinceRepository>();
             services.AddScoped<GovernorateRepository>();
             services.AddScoped<AreaRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddScoped<TokenService>();
             services.AddScoped<EmailService>();
@@ -42,6 +43,7 @@ namespace Dars_5ososy_API.Extensions
             services.AddScoped<ProvinceService>();
             services.AddScoped<GovernorateService>();
             services.AddScoped<AreaService>();
+            services.AddScoped<IImageService, ImageService>();
 
             services.AddAutoMapper(x => x.AddProfile(new DomainProfile()));
 

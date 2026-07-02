@@ -1,6 +1,6 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using Dars_5ososy_API.Application.DTOs.ImageDTOs;
 using Dars_5ososy_API.Application.Services;
-using Dars_5ososy_API.Domain.Entities;
 using Dars_5ososy_API.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +10,11 @@ namespace Dars_5ososy_API.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/images")]
     [ApiController]
-    public class ImagesController : ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
 
-        public ImagesController(IImageService imageService)
+        public ImageController(IImageService imageService)
         {
             _imageService = imageService;
         }
@@ -23,24 +23,32 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="201">Image uploaded successfully.</response>
         /// <response code="400">Image upload failed.</response>
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile image)
+        [ProducesResponseType(typeof(ApiResponse<ImageDTO>), StatusCodes.Status201Created)]
+        public async Task<IActionResult> Upload([FromForm] UploadImageDTO imageDto)
         {
-            var entity = await _imageService.UploadImageAsync(image);
-            if (entity == null)
-                return BadRequest(ApiResponse<int>.Fail("Image upload failed."));
-            return Ok(ApiResponse<int>.Successed(entity.Id, "Image uploaded successfully."));
+            var createdImage = await _imageService.UploadImageAsync(imageDto);
+            if (createdImage == null)
+                return BadRequest(ApiResponse<object>.Fail("Image upload failed."));
+
+            return CreatedAtAction(
+                nameof(GetImage),
+                new { id = createdImage.Id },
+                ApiResponse<ImageDTO>.Successed(createdImage, "Image uploaded successfully.")
+            );
         }
 
         /// <summary>Get images by user.</summary>
         /// <response code="200">Images retrieved successfully.</response>
         /// <response code="404">No images found for the specified user.</response>
         [HttpGet("get-user/{username}")]
+        [ProducesResponseType(typeof(ApiResponse<List<ImageDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetImagesByUser(string username)
         {
             var images = await _imageService.GetImagesByUserAsync(username);
             if (images == null || !images.Any())
-                return NotFound(ApiResponse<List<Image>>.Fail("No images found for the specified user."));
-            return Ok(ApiResponse<List<Image>>.Successed(images, "Images retrieved successfully."));
+                return NotFound(ApiResponse<object>.Fail("No images found for the specified user."));
+
+            return Ok(ApiResponse<List<ImageDTO>>.Successed(images, "Images retrieved successfully."));
         }
 
         /// <summary>Get an image by ID.</summary>
@@ -51,8 +59,9 @@ namespace Dars_5ososy_API.Controllers
         {
             var image = await _imageService.GetImageByIdAsync(id);
             if (image == null)
-                return NotFound(ApiResponse<Image>.Fail("Image not found."));
-            return File(image.Data, image.ContentType);
+                return NotFound(ApiResponse<object>.Fail("Image not found."));
+
+            return File(image.Data, image.ContentType, image.FileName);
         }
 
         /// <summary>Update an existing image.</summary>
@@ -61,12 +70,14 @@ namespace Dars_5ososy_API.Controllers
         /// <response code="404">Image not found.</response>
         [Authorize]
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateImage(int id, IFormFile image)
+        [ProducesResponseType(typeof(ApiResponse<ImageDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateImage(int id, [FromForm] UpdateImageDTO imageDto)
         {
-            var updatedImage = await _imageService.UpdateImage(id, image);
+            var updatedImage = await _imageService.UpdateImageAsync(id, imageDto);
             if (updatedImage == null)
-                return NotFound(ApiResponse<Image>.Fail("Image not found."));
-            return Ok(ApiResponse<Image>.Successed(updatedImage, "Image updated successfully."));
+                return NotFound(ApiResponse<object>.Fail("Image not found."));
+
+            return Ok(ApiResponse<ImageDTO>.Successed(updatedImage, "Image updated successfully."));
         }
 
         /// <summary>Delete an existing image.</summary>
@@ -81,6 +92,7 @@ namespace Dars_5ososy_API.Controllers
             var result = await _imageService.DeleteImageAsync(id);
             if (!result)
                 return NotFound(ApiResponse<object>.Fail("Image not found."));
+
             return NoContent();
         }
     }

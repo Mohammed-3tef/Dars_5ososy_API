@@ -1,112 +1,105 @@
-﻿using Dars_5ososy_API.Domain.Entities;
-using Dars_5ososy_API.Infrastructure;
+﻿using AutoMapper;
+using Dars_5ososy_API.Application.DTOs.ImageDTOs;
+using Dars_5ososy_API.Domain.Entities;
+using Dars_5ososy_API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Application.Services
 {
-    public interface IImageService
-    {
-        Task<Image> GetImageByIdAsync(int id);
-        Task<Image> UploadImageAsync(IFormFile image);
-        Task<Image?> UpdateImage(int id, IFormFile image);
-        Task<bool> DeleteImageAsync(int id);
-        Task<List<Image>> GetImagesByUserAsync(string username);
-    }
-
     public class ImageService : IImageService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepository;
         private readonly string[] _allowedExtensions =
         {
             ".jpg", ".jpeg", ".png", ".gif", ".webp"
         };
 
-        public ImageService(UserManager<User> userManager, AppDbContext context)
+        public ImageService(IImageRepository imageRepository, IMapper mapper)
         {
-            _userManager = userManager;
-            _context = context;
+            _imageRepository = imageRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Image> GetImageByIdAsync(int id)
+        public async Task<ImageDTO?> GetImageByIdAsync(int id)
         {
-            var image = await _context.Images.FindAsync(id);
+            var image = await _imageRepository.GetByIdAsync(id);
             if (image == null)
-                throw new Exception("Image not found.");
-            return image;
+                return null;
+            return _mapper.Map<ImageDTO>(image);
         }
 
-        public async Task<List<Image>> GetImagesByUserAsync(string username)
+        public async Task<List<ImageDTO>> GetImagesByUserAsync(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
-
-            if (user == null)
-                return new List<Image>();
-
-            var images = await _context.Images
-                .Where(i => i.UserId == user.Id)
-                .ToListAsync();
-            return images;
+            var images = await _imageRepository.GetByUserUsernameAsync(username);
+            return _mapper.Map<List<ImageDTO>>(images);
         }
 
-        public async Task<Image> UploadImageAsync(IFormFile image)
+        public async Task<ImageDTO?> UploadImageAsync(UploadImageDTO imageDto)
         {
-            if (image == null || image.Length == 0)
-                throw new Exception("Invalid image.");
+            if (imageDto == null || imageDto.Image == null || imageDto.Image.Length == 0)
+                return null;
 
-            var extension =
-                Path.GetExtension(image.FileName).ToLowerInvariant();
+            var extension = Path.GetExtension(imageDto.Image.FileName).ToLowerInvariant();
 
             if (!_allowedExtensions.Contains(extension))
-                throw new Exception("Unsupported image format.");
+                return null;
 
             using var memoryStream = new MemoryStream();
 
-            await image.CopyToAsync(memoryStream);
+            await imageDto.Image.CopyToAsync(memoryStream);
 
             var entity = new Image
             {
                 Data = memoryStream.ToArray(),
-                FileName = image.FileName,
-                ContentType = image.ContentType,
-                FileSize = image.Length,
+                FileName = imageDto.Image.FileName,
+                ContentType = imageDto.Image.ContentType,
+                FileSize = imageDto.Image.Length,
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Images.Add(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            var createdImage = await _imageRepository.CreateAsync(entity, imageDto.Username);
+            if (createdImage == null)
+                return null;
+
+            return _mapper.Map<ImageDTO>(createdImage);
         }
 
-        public async Task<Image?> UpdateImage(int id, IFormFile image)
+        public async Task<ImageDTO?> UpdateImageAsync(int id, UpdateImageDTO imageDto)
         {
-            var existing = await GetImageByIdAsync(id);
+            var existing = await _imageRepository.GetByIdAsync(id);
 
             if (existing == null)
                 return null;
 
-            var updated = await UploadImageAsync(image);
+            if (imageDto == null || imageDto.Image == null || imageDto.Image.Length == 0)
+                return null;
 
-            existing.Data = updated.Data;
-            existing.FileName = updated.FileName;
-            existing.ContentType = updated.ContentType;
-            existing.FileSize = updated.FileSize;
+            var extension = Path.GetExtension(imageDto.Image.FileName).ToLowerInvariant();
+
+            if (!_allowedExtensions.Contains(extension))
+                return null;
+
+            using var memoryStream = new MemoryStream();
+
+            await imageDto.Image.CopyToAsync(memoryStream);
+
+            existing.Data = memoryStream.ToArray();
+            existing.FileName = imageDto.Image.FileName;
+            existing.ContentType = imageDto.Image.ContentType;
+            existing.FileSize = imageDto.Image.Length;
             existing.CreatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
-            return existing;
+            var updatedImage = await _imageRepository.UpdateAsync(existing);
+            if (updatedImage == null)
+                return null;
+
+            return _mapper.Map<ImageDTO>(updatedImage);
         }
 
         public async Task<bool> DeleteImageAsync(int id)
         {
-            var image = await GetImageByIdAsync(id);
-            if (image == null)
-                return false;
-            _context.Images.Remove(image);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _imageRepository.DeleteAsync(id);
         }
     }
 }

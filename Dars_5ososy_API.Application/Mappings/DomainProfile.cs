@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dars_5ososy_API.Application.DTOs;
 using Dars_5ososy_API.Application.DTOs.AddressDTOs;
+using Dars_5ososy_API.Application.DTOs.ImageDTOs;
 using Dars_5ososy_API.Application.DTOs.UserDTOs;
 using Dars_5ososy_API.Domain.Entities;
 
@@ -35,6 +36,9 @@ namespace Dars_5ososy_API.Application.Mappings
             CreateMap<AreaDTO, Area>().ReverseMap();
 
             CreateMap<BookingDTO, Booking>().ReverseMap();
+
+            CreateMap<Image, ImageDTO>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
         }
     }
 }
