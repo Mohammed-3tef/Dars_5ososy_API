@@ -1,5 +1,5 @@
 ﻿using Dars_5ososy_API.Application.Services;
-using Dars_5ososy_API.Domain.Entities;
+using Dars_5ososy_API.Shared.Settings;
 
 namespace Dars_5ososy_API.Extensions
 {
@@ -9,9 +9,7 @@ namespace Dars_5ososy_API.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<EmailSettings>(
-                configuration.GetSection("EmailSettings"));
-
+            services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
             services.AddScoped<EmailService>();
 
             return services;

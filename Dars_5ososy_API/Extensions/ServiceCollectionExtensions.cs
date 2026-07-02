@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Dars_5ososy_API.Application.Mappings;
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Infrastructure.Repositories;
+using Dars_5ososy_API.Shared.Settings;
 
 namespace Dars_5ososy_API.Extensions
 {
@@ -26,10 +27,7 @@ namespace Dars_5ososy_API.Extensions
             services.AddScoped<AreaRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
 
-            services.AddScoped<TokenService>();
-            services.AddScoped<EmailService>();
             services.AddScoped<AuthService>();
-
             services.AddScoped<UserService>();
             services.AddScoped<UserAddressService>();
             services.AddScoped<AvailabilitySlotService>();

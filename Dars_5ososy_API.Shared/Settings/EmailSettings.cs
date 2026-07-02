@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dars_5ososy_API.Domain.Entities
+﻿namespace Dars_5ososy_API.Shared.Settings
 {
     public class EmailSettings
     {
+        public const string SectionName = "EmailSettings";
         public string Host { get; set; } = string.Empty;
         public int Port { get; set; }
         public bool EnableSSL { get; set; }

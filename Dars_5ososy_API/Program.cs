@@ -17,7 +17,7 @@ namespace Dars_5ososy_API
             builder.Services.AddSwaggerWithJwt();
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
-            builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddJwtAuthenticationAsync(builder.Configuration);
             builder.Services.AddEmailService(builder.Configuration);
 
             var app = builder.Build();
