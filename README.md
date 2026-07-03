@@ -57,3 +57,11 @@ The API is versioned, documented with Swagger, secured with JWT authentication, 
 ## Build Status
 
 The current solution builds successfully with .NET 8.
+
+## Additional Documentation & Wiki
+
+For more detailed information, guides, and deeper technical breakdowns, please visit our **[Project Wiki](https://github.com/Mohammed-3tef/Dars_5ososy_API/wiki)**.
+
+You can explore the following dedicated pages:
+* **[Wiki Home Page](https://github.com/Mohammed-3tef/Dars_5ososy_API/wiki)**: A high-level overview, getting started setup guides, and project onboarding documentation.
+* **[Controllers & Routing Guide](https://github.com/Mohammed-3tef/Dars_5ososy_API/wiki/Controllers)**: Detailed breakdown of the API endpoints, route structure (`api/v{version}`), controller responsibilities, and versioning rules.
