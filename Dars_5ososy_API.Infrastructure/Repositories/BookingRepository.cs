@@ -1,17 +1,24 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class BookingRepository
+    public interface IBookingRepository
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<Booking>> GetAllAsync();
+        Task<Booking> CreateAsync(Booking entity);
+        Task<bool> DeleteAsync(string studentUsername, string teacherUsername);
+        Task<List<Booking>> GetByTeacherUsernameAsync(string teacherUsername);
+        Task<List<Booking>> GetByStudentUsernameAsync(string studentUsername);
+        Task<List<Booking>> GetByStudentAndTeacherAsync(string studentUsername, string teacherUsername);
+    }
+
+    public class BookingRepository : IBookingRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public BookingRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public BookingRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

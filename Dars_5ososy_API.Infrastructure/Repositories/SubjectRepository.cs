@@ -1,17 +1,19 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class SubjectRepository : IGenericRepository<Subject>
+    public interface ISubjectRepository : IGenericRepository<Subject>
     {
-        private readonly UserManager<User> _userManager;
+        Task<Subject?> GetByNameAsync(string subjectName);
+    }
+
+    public class SubjectRepository : ISubjectRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public SubjectRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public SubjectRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

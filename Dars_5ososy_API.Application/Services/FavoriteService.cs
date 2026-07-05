@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class FavoriteService
     {
         private readonly IMapper _mapper;
-        private readonly FavoriteRepository _FavoriteRepository;
+        private readonly IFavoriteRepository _FavoriteRepository;
 
-        public FavoriteService(FavoriteRepository FavoriteRepository, IMapper mapper)
+        public FavoriteService(IFavoriteRepository FavoriteRepository, IMapper mapper)
         {
             _FavoriteRepository = FavoriteRepository;
             _mapper = mapper;

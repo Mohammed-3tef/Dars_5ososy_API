@@ -4,7 +4,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class UserRepository
+    public interface IUserRepository
+    {
+        Task<List<User>> GetAllAsync();
+        Task<User?> GetByIdAsync(long id);
+        Task<User?> GetByUserNameAsync(string userName);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByPhoneNumberAsync(string phoneNumber);
+        Task<List<string>?> GetRolesAsync(User user);
+        Task<User> CreateAsync(User entity, string password);
+        Task<User?> UpdateAsync(User entity);
+        Task<bool> DeleteAsync(long id);
+    }
+
+    public class UserRepository : IUserRepository
     {
         private readonly UserManager<User> _userManager;
 

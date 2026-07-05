@@ -3,7 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class UserAddressRepository
+    public interface IUserAddressRepository
+    {
+        Task<UserAddress?> CreateAsync(UserAddress entity);
+        Task<UserAddress?> UpdateAsync(UserAddress entity);
+        Task<bool> DeleteAsync(UserAddress userAddress);
+        Task<List<UserAddress>> GetAllAsync();
+        Task<UserAddress?> GetByUsernameAsync(string username);
+    }
+
+    public class UserAddressRepository : IUserAddressRepository
     {
         private readonly AppDbContext _context;
 

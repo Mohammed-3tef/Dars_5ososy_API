@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class ProvinceService
     {
         private readonly IMapper _mapper;
-        private readonly ProvinceRepository _ProvinceRepository;
+        private readonly IProvinceRepository _ProvinceRepository;
 
-        public ProvinceService(ProvinceRepository ProvinceRepository, IMapper mapper)
+        public ProvinceService(IProvinceRepository ProvinceRepository, IMapper mapper)
         {
             _ProvinceRepository = ProvinceRepository;
             _mapper = mapper;

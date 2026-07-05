@@ -4,14 +4,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class GovernorateRepository
+
+    public interface IGovernorateRepository 
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<Governorate>> GetAllAsync();
+        Task<Governorate?> GetByEnglishNameAsync(string GovernorateEnglishName);
+        Task<Governorate?> GetByArabicNameAsync(string GovernorateArabicName);
+        Task<Governorate> CreateAsync(Governorate entity);
+        Task<Governorate?> UpdateAsync(Governorate entity);
+        Task<bool> DeleteByArabicNameAsync(string GovernorateArabicName);
+        Task<bool> DeleteByEnglishNameAsync(string GovernorateEnglishName);
+        Task<List<Governorate>> GetAllByProvinceArabicNameAsync(string provinceArabicName);
+        Task<List<Governorate>> GetAllByProvinceEnglishNameAsync(string provinceEnglishName);
+    }
+
+    public class GovernorateRepository : IGovernorateRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public GovernorateRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public GovernorateRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

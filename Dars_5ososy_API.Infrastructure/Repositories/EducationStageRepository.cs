@@ -1,17 +1,19 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class EducationStageRepository : IGenericRepository<EducationStage>
+    public interface IEducationStageRepository : IGenericRepository<EducationStage>
     {
-        private readonly UserManager<User> _userManager;
+        Task<EducationStage?> GetByNameAsync(string EducationStageName);
+    }
+
+    public class EducationStageRepository : IEducationStageRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public EducationStageRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public EducationStageRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

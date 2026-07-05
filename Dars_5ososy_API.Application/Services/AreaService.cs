@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class AreaService
     {
         private readonly IMapper _mapper;
-        private readonly AreaRepository _AreaRepository;
+        private readonly IAreaRepository _AreaRepository;
 
-        public AreaService(AreaRepository AreaRepository, IMapper mapper)
+        public AreaService(IAreaRepository AreaRepository, IMapper mapper)
         {
             _AreaRepository = AreaRepository;
             _mapper = mapper;

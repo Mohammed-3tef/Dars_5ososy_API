@@ -1,17 +1,24 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class TeacherSubjectRepository
+    public interface ITeacherSubjectRepository
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<TeacherSubject>> GetAllAsync();
+        Task<TeacherSubject> CreateAsync(TeacherSubject entity);
+        Task<bool> DeleteAsync(string studentUsername, string teacherUsername);
+        Task<List<TeacherSubject>> GetByTeacherUsernameAsync(string teacherUsername);
+        Task<List<TeacherSubject>> GetBySubjectCodeAsync(string subjectCode);
+        Task<List<TeacherSubject>> GetByStudentAndTeacherAsync(string subjectCode, string teacherUsername);
+    }
+
+    public class TeacherSubjectRepository : ITeacherSubjectRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public TeacherSubjectRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public TeacherSubjectRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

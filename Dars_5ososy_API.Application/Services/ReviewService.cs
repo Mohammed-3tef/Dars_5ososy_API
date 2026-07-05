@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class ReviewService
     {
         private readonly IMapper _mapper;
-        private readonly ReviewRepository _ReviewRepository;
+        private readonly IReviewRepository _ReviewRepository;
 
-        public ReviewService(ReviewRepository ReviewRepository, IMapper mapper)
+        public ReviewService(IReviewRepository ReviewRepository, IMapper mapper)
         {
             _ReviewRepository = ReviewRepository;
             _mapper = mapper;

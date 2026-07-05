@@ -3,7 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class AvailabilitySlotRepository
+    public interface IAvailabilitySlotRepository
+    {
+        Task<AvailabilitySlot> CreateAsync(AvailabilitySlot entity);
+        Task<bool> DeleteAsync(long id);
+        Task<List<AvailabilitySlot>> GetAllAsync();
+        Task<List<AvailabilitySlot>> GetAllByUsernameAsync(string username);
+        Task<AvailabilitySlot?> UpdateAsync(AvailabilitySlot entity);
+    }
+
+    public class AvailabilitySlotRepository : IAvailabilitySlotRepository
     {
         private readonly AppDbContext _context;
 

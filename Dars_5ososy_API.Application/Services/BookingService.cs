@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class BookingService
     {
         private readonly IMapper _mapper;
-        private readonly BookingRepository _BookingRepository;
+        private readonly IBookingRepository _BookingRepository;
 
-        public BookingService(BookingRepository BookingRepository, IMapper mapper)
+        public BookingService(IBookingRepository BookingRepository, IMapper mapper)
         {
             _BookingRepository = BookingRepository;
             _mapper = mapper;

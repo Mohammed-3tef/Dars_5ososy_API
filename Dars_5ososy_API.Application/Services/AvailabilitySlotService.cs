@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class AvailabilitySlotService
     {
         private readonly IMapper _mapper;
-        private readonly AvailabilitySlotRepository _availabilitySlotRepository;
+        private readonly IAvailabilitySlotRepository _availabilitySlotRepository;
 
-        public AvailabilitySlotService(AvailabilitySlotRepository availabilitySlotRepository, IMapper mapper)
+        public AvailabilitySlotService(IAvailabilitySlotRepository availabilitySlotRepository, IMapper mapper)
         {
             _mapper = mapper;
             _availabilitySlotRepository = availabilitySlotRepository;

@@ -4,7 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class FavoriteRepository
+    public interface IFavoriteRepository
+    {
+        Task<List<Favorite>> GetAllAsync();
+        Task<Favorite> CreateAsync(Favorite entity);
+        Task<bool> DeleteAsync(string studentUsername, string teacherUsername);
+        Task<List<Favorite>> GetByTeacherUsernameAsync(string teacherUsername);
+        Task<List<Favorite>> GetByStudentUsernameAsync(string studentUsername);
+        Task<List<Favorite>> GetByStudentAndTeacherAsync(string studentUsername, string teacherUsername);
+    }
+
+    public class FavoriteRepository : IFavoriteRepository
     {
         private readonly UserManager<User> _userManager;
         public readonly AppDbContext _appDbContext;

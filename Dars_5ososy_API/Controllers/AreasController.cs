@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dars_5ososy_API.Controllers
 {
+    /// <summary>
+    /// AreasController is responsible for handling HTTP requests related to Areas. It provides endpoints for retrieving, creating, updating, and deleting Areas. The controller uses the AreaService to perform operations on Area data.
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/areas")]
     [ApiController]

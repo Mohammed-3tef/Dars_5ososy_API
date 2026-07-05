@@ -9,9 +9,9 @@ namespace Dars_5ososy_API.Application.Services
     public class SubjectService
     {
         private readonly IMapper _mapper;
-        private readonly SubjectRepository _subjectRepository;
+        private readonly ISubjectRepository _subjectRepository;
 
-        public SubjectService(SubjectRepository subjectRepository, IMapper mapper)
+        public SubjectService(ISubjectRepository subjectRepository, IMapper mapper)
         {
             _subjectRepository = subjectRepository;
             _mapper = mapper;

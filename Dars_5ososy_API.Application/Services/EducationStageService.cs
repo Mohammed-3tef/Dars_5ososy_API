@@ -9,9 +9,9 @@ namespace Dars_5ososy_API.Application.Services
     public class EducationStageService
     {
         private readonly IMapper _mapper;
-        private readonly EducationStageRepository _EducationStageRepository;
+        private readonly IEducationStageRepository _EducationStageRepository;
 
-        public EducationStageService(EducationStageRepository EducationStageRepository, IMapper mapper)
+        public EducationStageService(IEducationStageRepository EducationStageRepository, IMapper mapper)
         {
             _EducationStageRepository = EducationStageRepository;
             _mapper = mapper;

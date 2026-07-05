@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dars_5ososy_API.Controllers
 {
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/TeacherSubjects")]
+    [Route("api/v{version:apiVersion}/teacher-subjects")]
     [ApiController]
     public class TeacherSubjectsController : ControllerBase
     {

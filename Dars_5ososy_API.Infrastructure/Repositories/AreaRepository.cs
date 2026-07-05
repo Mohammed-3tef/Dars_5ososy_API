@@ -4,14 +4,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class AreaRepository
+    public interface IAreaRepository
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<Area>> GetAllAsync();
+        Task<Area?> GetByEnglishNameAsync(string AreaEnglishName);
+        Task<Area?> GetByArabicNameAsync(string AreaArabicName);
+        Task<Area> CreateAsync(Area entity);
+        Task<Area?> UpdateAsync(Area entity);
+        Task<bool> DeleteByArabicNameAsync(string AreaArabicName);
+        Task<bool> DeleteByEnglishNameAsync(string AreaEnglishName);
+        Task<List<Area>> GetAllByProvinceEnglishNameAsync(string provinceEnglishName);
+        Task<List<Area>> GetAllByProvinceArabicNameAsync(string provinceArabicName);
+        Task<List<Area>> GetAllByGovernorateArabicNameAsync(string governorateArabicName);
+        Task<List<Area>> GetAllByGovernorateEnglishNameAsync(string governorateEnglishName);
+    }
+
+    public class AreaRepository : IAreaRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public AreaRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public AreaRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 
@@ -83,34 +96,34 @@ namespace Dars_5ososy_API.Infrastructure.Repositories
 
         public async Task<List<Area>> GetAllByProvinceEnglishNameAsync(string provinceEnglishName)
         {
-            var province = await _appDbContext.Provinces
-                .FirstOrDefaultAsync(p => p.EnglishName.ToUpper() == provinceEnglishName.ToUpper());
             return await _appDbContext.Areas
-                .Where(a => a.Governorate.ProvinceId == province.Id).ToListAsync();
+                .Where(a => a.Governorate.Province.EnglishName.ToUpper() == provinceEnglishName.ToUpper())
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<Area>> GetAllByProvinceArabicNameAsync(string provinceArabicName)
         {
-            var province = await _appDbContext.Provinces
-                .FirstOrDefaultAsync(p => p.ArabicName.ToUpper() == provinceArabicName.ToUpper());
             return await _appDbContext.Areas
-                .Where(a => a.Governorate.ProvinceId == province.Id).ToListAsync();
+                .Where(a => a.Governorate.Province.ArabicName.ToUpper() == provinceArabicName.ToUpper())
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<Area>> GetAllByGovernorateArabicNameAsync(string governorateArabicName)
         {
-            var governorate = await _appDbContext.Governorates
-                .FirstOrDefaultAsync(g => g.ArabicName.ToUpper() == governorateArabicName.ToUpper());
             return await _appDbContext.Areas
-                .Where(a => a.GovernorateId == governorate.Id).ToListAsync();
+                .Where(a => a.Governorate.ArabicName.ToUpper() == governorateArabicName.ToUpper())
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<Area>> GetAllByGovernorateEnglishNameAsync(string governorateEnglishName)
         {
-            var governorate = await _appDbContext.Governorates
-                .FirstOrDefaultAsync(g => g.EnglishName.ToUpper() == governorateEnglishName.ToUpper());
             return await _appDbContext.Areas
-                .Where(a => a.GovernorateId == governorate.Id).ToListAsync();
+                .Where(a => a.Governorate.EnglishName.ToUpper() == governorateEnglishName.ToUpper())
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

@@ -1,17 +1,25 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class ReviewRepository
+    public interface IReviewRepository
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<Review>> GetAllAsync();
+        Task<Review> CreateAsync(Review entity);
+        Task<Review?> UpdateAsync(Review entity);
+        Task<bool> DeleteAsync(string studentUsername, string teacherUsername);
+        Task<List<Review>> GetByTeacherUsernameAsync(string teacherUsername);
+        Task<List<Review>> GetByStudentUsernameAsync(string studentUsername);
+        Task<List<Review>> GetByStudentAndTeacherAsync(string studentUsername, string teacherUsername);
+    }
+
+    public class ReviewRepository : IReviewRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public ReviewRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public ReviewRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

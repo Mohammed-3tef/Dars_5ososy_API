@@ -9,10 +9,10 @@ namespace Dars_5ososy_API.Application.Services
     public class UserAddressService
     {
         private readonly IMapper _mapper;
-        private readonly UserAddressRepository _userAddressRepository;
-        private readonly AreaRepository _areaRepository;
+        private readonly IUserAddressRepository _userAddressRepository;
+        private readonly IAreaRepository _areaRepository;
 
-        public UserAddressService(UserAddressRepository userAddressRepository, AreaRepository areaRepository, IMapper mapper)
+        public UserAddressService(IUserAddressRepository userAddressRepository, IAreaRepository areaRepository, IMapper mapper)
         {
             _userAddressRepository = userAddressRepository;
             _areaRepository = areaRepository;

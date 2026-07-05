@@ -1,17 +1,25 @@
 ﻿using Dars_5ososy_API.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dars_5ososy_API.Infrastructure.Repositories
 {
-    public class ProvinceRepository
+    public interface IProvinceRepository
     {
-        private readonly UserManager<User> _userManager;
+        Task<List<Province>> GetAllAsync();
+        Task<Province?> GetByEnglishNameAsync(string ProvinceEnglishName);
+        Task<Province?> GetByArabicNameAsync(string ProvinceArabicName);
+        Task<Province> CreateAsync(Province entity);
+        Task<Province?> UpdateAsync(Province entity);
+        Task<bool> DeleteByArabicNameAsync(string ProvinceArabicName);
+        Task<bool> DeleteByEnglishNameAsync(string ProvinceEnglishName);
+    }
+
+    public class ProvinceRepository : IProvinceRepository
+    {
         public readonly AppDbContext _appDbContext;
 
-        public ProvinceRepository(UserManager<User> userManager, AppDbContext appDbContext)
+        public ProvinceRepository(AppDbContext appDbContext)
         {
-            _userManager = userManager;
             _appDbContext = appDbContext;
         }
 

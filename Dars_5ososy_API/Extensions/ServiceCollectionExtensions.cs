@@ -2,7 +2,6 @@ using Asp.Versioning;
 using Dars_5ososy_API.Application.Mappings;
 using Dars_5ososy_API.Application.Services;
 using Dars_5ososy_API.Infrastructure.Repositories;
-using Dars_5ososy_API.Shared.Settings;
 
 namespace Dars_5ososy_API.Extensions
 {
@@ -12,19 +11,19 @@ namespace Dars_5ososy_API.Extensions
         {
             //services.AddScoped(typeof(IGenericRepository<>));
 
-            services.AddScoped<UserRepository>();
-            services.AddScoped<UserAddressRepository>();
-            services.AddScoped<AvailabilitySlotRepository>();
-            services.AddScoped<SubjectRepository>();
-            services.AddScoped<TeacherSubjectRepository>();
-            services.AddScoped<EducationSystemRepository>();
-            services.AddScoped<EducationStageRepository>();
-            services.AddScoped<ReviewRepository>();
-            services.AddScoped<FavoriteRepository>();
-            services.AddScoped<BookingRepository>();
-            services.AddScoped<ProvinceRepository>();
-            services.AddScoped<GovernorateRepository>();
-            services.AddScoped<AreaRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserAddressRepository, UserAddressRepository>();
+            services.AddScoped<IAvailabilitySlotRepository, AvailabilitySlotRepository>();
+            services.AddScoped<ISubjectRepository, SubjectRepository>();
+            services.AddScoped<ITeacherSubjectRepository, TeacherSubjectRepository>();
+            services.AddScoped<IEducationSystemRepository, EducationSystemRepository>();
+            services.AddScoped<IEducationStageRepository, EducationStageRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<IProvinceRepository, ProvinceRepository>();
+            services.AddScoped<IGovernorateRepository, GovernorateRepository>();
+            services.AddScoped<IAreaRepository, AreaRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddScoped<AuthService>();

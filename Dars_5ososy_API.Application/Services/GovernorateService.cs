@@ -8,9 +8,9 @@ namespace Dars_5ososy_API.Application.Services
     public class GovernorateService
     {
         private readonly IMapper _mapper;
-        private readonly GovernorateRepository _GovernorateRepository;
+        private readonly IGovernorateRepository _GovernorateRepository;
 
-        public GovernorateService(GovernorateRepository GovernorateRepository, IMapper mapper)
+        public GovernorateService(IGovernorateRepository GovernorateRepository, IMapper mapper)
         {
             _GovernorateRepository = GovernorateRepository;
             _mapper = mapper;
