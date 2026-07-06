@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var bookings = await _bookingService.GetAllAsync();
             if (bookings == null || !bookings.Any())
-                return NotFound(ApiResponse<object>.Fail("No bookings found."));
-            return Ok(ApiResponse<List<BookingDTO>>.Successed(bookings, "Bookings retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No bookings found."));
+            return Ok(ApiResponse<List<BookingDTO>>.Success(bookings, "Bookings retrieved successfully."));
         }
 
         /// <summary>Get bookings by student username.</summary>
@@ -41,9 +41,9 @@ namespace Dars_5ososy_API.Controllers
         {
             var bookings = await _bookingService.GetByStudentUsernameAsync(studentUsername);
             if (bookings == null || !bookings.Any())
-                return NotFound(ApiResponse<object>.Fail("No bookings found for the specified student."));
+                return NotFound(ApiResponse<object>.Failure("No bookings found for the specified student."));
 
-            return Ok(ApiResponse<List<BookingDTO>>.Successed(bookings, "Bookings retrieved successfully."));
+            return Ok(ApiResponse<List<BookingDTO>>.Success(bookings, "Bookings retrieved successfully."));
         }
 
         /// <summary>Get bookings by teacher username.</summary>
@@ -55,8 +55,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var bookings = await _bookingService.GetByTeacherUsernameAsync(teacherUsername);
             if (bookings == null || !bookings.Any())
-                return NotFound(ApiResponse<object>.Fail("No bookings found for the specified teacher."));
-            return Ok(ApiResponse<List<BookingDTO>>.Successed(bookings, "Bookings retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No bookings found for the specified teacher."));
+            return Ok(ApiResponse<List<BookingDTO>>.Success(bookings, "Bookings retrieved successfully."));
         }
 
         /// <summary>Get a booking by student and teacher usernames.</summary>
@@ -68,8 +68,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var booking = await _bookingService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (booking == null)
-                return NotFound(ApiResponse<object>.Fail("No booking found for the specified student and teacher."));
-            return Ok(ApiResponse<BookingDTO>.Successed(booking, "Booking retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No booking found for the specified student and teacher."));
+            return Ok(ApiResponse<BookingDTO>.Success(booking, "Booking retrieved successfully."));
         }
 
         /// <summary>Create a new booking.</summary>
@@ -85,11 +85,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingbooking = await _bookingService.GetByStudentAndTeacherAsync(BookingDTO.StudentUsername, BookingDTO.AvailabilitySlot.TeacherUsername);
             if (existingbooking != null)
-                return Conflict(ApiResponse<object>.Fail("Booking with the same details already exists."));
+                return Conflict(ApiResponse<object>.Failure("Booking with the same details already exists."));
             var createdbooking = await _bookingService.CreateAsync(BookingDTO);
             if (createdbooking == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create booking."));
-            return CreatedAtAction(nameof(GetAllbookings), ApiResponse<BookingDTO>.Successed(createdbooking, "Booking created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to create booking."));
+            return CreatedAtAction(nameof(GetAllbookings), ApiResponse<BookingDTO>.Success(createdbooking, "Booking created successfully."));
         }
 
         /// <summary>Delete a booking by student and teacher usernames.</summary>
@@ -105,10 +105,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingbooking = await _bookingService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (existingbooking == null)
-                return NotFound(ApiResponse<object>.Fail("Booking not found."));
+                return NotFound(ApiResponse<object>.Failure("Booking not found."));
             var isDeleted = await _bookingService.DeleteAsync(studentUsername, teacherUsername);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete booking."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete booking."));
             return NoContent();
         }
     }

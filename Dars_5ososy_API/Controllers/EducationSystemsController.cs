@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var educationSystems = await _educationSystemService.GetAllAsync();
             if (educationSystems == null) 
-                return NotFound(ApiResponse<object>.Fail("No education systems found."));
-            return Ok(ApiResponse<List<EducationSystemDTO>>.Successed(educationSystems, "Education systems retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No education systems found."));
+            return Ok(ApiResponse<List<EducationSystemDTO>>.Success(educationSystems, "Education systems retrieved successfully."));
         }
 
         /// <summary>Get an education system by its name.</summary>
@@ -41,14 +41,14 @@ namespace Dars_5ososy_API.Controllers
         {
             var educationSystem = await _educationSystemService.GetByNameAsync(educationSystemName);
             if (educationSystem == null)
-                return NotFound(ApiResponse<object>.Fail("Education system not found."));
-            return Ok(ApiResponse<EducationSystemDTO>.Successed(educationSystem, "Education system retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Education system not found."));
+            return Ok(ApiResponse<EducationSystemDTO>.Success(educationSystem, "Education system retrieved successfully."));
         }
 
         /// <summary>Create a new education system.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can create a new education system.</remarks>
         /// <response code="201">Education system created successfully.</response>
-        /// <response code="400">Failed to delete education stage.</response>
+        /// <response code="400">Failureed to delete education stage.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="409">Education system with the same name already exists.</response>
         [HttpPost("create")]
@@ -58,17 +58,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingEducationSystem = await _educationSystemService.GetByNameAsync(educationSystemDto.EnglishName);
             if (existingEducationSystem != null)
-                return Conflict(ApiResponse<object>.Fail("Education system with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Education system with the same name already exists."));
             var createdEducationSystem = await _educationSystemService.CreateAsync(educationSystemDto);
             if (createdEducationSystem == null)
-                return BadRequest(ApiResponse<object>.Fail("Education system with the same name already exists."));
-            return CreatedAtAction(nameof(GetEducationSystemByName), new { educationSystemName = createdEducationSystem.EnglishName }, ApiResponse<EducationSystemDTO>.Successed(createdEducationSystem, "Education system created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Education system with the same name already exists."));
+            return CreatedAtAction(nameof(GetEducationSystemByName), new { educationSystemName = createdEducationSystem.EnglishName }, ApiResponse<EducationSystemDTO>.Success(createdEducationSystem, "Education system created successfully."));
         }
 
         /// <summary>Update an existing education system.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can update an education system.</remarks>
         /// <response code="200">Education system updated successfully.</response>
-        /// <response code="400">Failed to update education system.</response>
+        /// <response code="400">Failureed to update education system.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="404">Education system not found.</response>
         [HttpPut("update")]
@@ -78,17 +78,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingEducationSystem = await _educationSystemService.GetByNameAsync(educationSystemDto.EnglishName);
             if (existingEducationSystem == null)
-                return NotFound(ApiResponse<object>.Fail("Education system not found."));
+                return NotFound(ApiResponse<object>.Failure("Education system not found."));
             var updatedEducationSystem = await _educationSystemService.UpdateAsync(educationSystemDto);
             if (updatedEducationSystem == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update education system."));
-            return Ok(ApiResponse<EducationSystemDTO>.Successed(updatedEducationSystem, "Education system updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to update education system."));
+            return Ok(ApiResponse<EducationSystemDTO>.Success(updatedEducationSystem, "Education system updated successfully."));
         }
 
         /// <summary>Delete an education system by its ID.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete an education system.</remarks>
         /// <response code="204">Education system deleted successfully.</response>
-        /// <response code="400">Failed to delete education system.</response>
+        /// <response code="400">Failureed to delete education system.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="404">Education system not found.</response>
         [HttpDelete("delete/{id}")]
@@ -98,7 +98,7 @@ namespace Dars_5ososy_API.Controllers
         {
             var isDeleted = await _educationSystemService.DeleteAsync(id);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete education system."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete education system."));
             return NoContent();
         }
     }

@@ -53,7 +53,7 @@ namespace Dars_5ososy_API.Extensions
                         context.Response.StatusCode = 401;
                         context.Response.ContentType = "application/json";
 
-                        var response = ApiResponse<object>.Fail(
+                        var response = ApiResponse<object>.Failure(
                             "You are not signed in. Please log in to continue.");
 
                         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
@@ -65,7 +65,7 @@ namespace Dars_5ososy_API.Extensions
                         context.Response.StatusCode = 403;
                         context.Response.ContentType = "application/json";
 
-                        var response = ApiResponse<object>.Fail(
+                        var response = ApiResponse<object>.Failure(
                             "You do not have permission to access this resource.");
 
                         await context.Response.WriteAsync(JsonSerializer.Serialize(response));

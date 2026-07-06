@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Favorites = await _FavoriteService.GetAllAsync();
             if (Favorites == null || !Favorites.Any())
-                return NotFound(ApiResponse<object>.Fail("No Favorites found."));
-            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Favorites found."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Success(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get favorites by student username.</summary>
@@ -41,9 +41,9 @@ namespace Dars_5ososy_API.Controllers
         {
             var Favorites = await _FavoriteService.GetByStudentUsernameAsync(studentUsername);
             if (Favorites == null || !Favorites.Any())
-                return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified student."));
+                return NotFound(ApiResponse<object>.Failure("No Favorites found for the specified student."));
 
-            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Success(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get favorites by teacher username.</summary>
@@ -55,8 +55,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Favorites = await _FavoriteService.GetByTeacherUsernameAsync(teacherUsername);
             if (Favorites == null || !Favorites.Any())
-                return NotFound(ApiResponse<object>.Fail("No Favorites found for the specified teacher."));
-            return Ok(ApiResponse<List<FavoriteDTO>>.Successed(Favorites, "Favorites retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Favorites found for the specified teacher."));
+            return Ok(ApiResponse<List<FavoriteDTO>>.Success(Favorites, "Favorites retrieved successfully."));
         }
 
         /// <summary>Get a favorite by student and teacher usernames.</summary>
@@ -68,15 +68,15 @@ namespace Dars_5ososy_API.Controllers
         {
             var Favorite = await _FavoriteService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (Favorite == null)
-                return NotFound(ApiResponse<object>.Fail("No Favorite found for the specified student and teacher."));
+                return NotFound(ApiResponse<object>.Failure("No Favorite found for the specified student and teacher."));
 
-            return Ok(ApiResponse<FavoriteDTO>.Successed(Favorite, "Favorite retrieved successfully."));
+            return Ok(ApiResponse<FavoriteDTO>.Success(Favorite, "Favorite retrieved successfully."));
         }
 
         /// <summary>Create a new favorite.</summary>
         /// <remarks>Only <c>Authorized users</c> can create a favorite.</remarks>
         /// <response code="201">Favorite created successfully.</response>
-        /// <response code="400">Failed to create favorite.</response>
+        /// <response code="400">Failureed to create favorite.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="409">Favorite with the same details already exists.</response>
         [Authorize]
@@ -86,11 +86,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingFavorite = await _FavoriteService.GetByStudentAndTeacherAsync(FavoriteDto.StudentUsername, FavoriteDto.TeacherUsername);
             if (existingFavorite != null)
-                return Conflict(ApiResponse<object>.Fail("Favorite with the same details already exists."));
+                return Conflict(ApiResponse<object>.Failure("Favorite with the same details already exists."));
             var createdFavorite = await _FavoriteService.CreateAsync(FavoriteDto);
             if (createdFavorite == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create favorite."));
-            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Successed(createdFavorite, "Favorite created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to create favorite."));
+            return CreatedAtAction(nameof(GetAllFavorites), ApiResponse<FavoriteDTO>.Success(createdFavorite, "Favorite created successfully."));
         }
 
         /// <summary>Delete a favorite by student and teacher usernames.</summary>
@@ -105,7 +105,7 @@ namespace Dars_5ososy_API.Controllers
         {
             var isDeleted = await _FavoriteService.DeleteAsync(studentUsername, teacherUsername);
             if (!isDeleted)
-                return NotFound(ApiResponse<object>.Fail("Favorite not found."));
+                return NotFound(ApiResponse<object>.Failure("Favorite not found."));
             return NoContent();
         }
     }

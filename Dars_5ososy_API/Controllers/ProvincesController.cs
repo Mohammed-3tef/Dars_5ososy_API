@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Provinces = await _ProvinceService.GetAllAsync();
             if (Provinces == null || !Provinces.Any())
-                return NotFound(ApiResponse<object>.Fail("No provinces found."));
-            return Ok(ApiResponse<List<ProvinceDTO>>.Successed(Provinces, "Provinces retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No provinces found."));
+            return Ok(ApiResponse<List<ProvinceDTO>>.Success(Provinces, "Provinces retrieved successfully."));
         }
 
         /// <summary>Get a province by its Arabic name.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Province = await _ProvinceService.GetByArabicNameAsync(ProvinceArabicName);
             if (Province == null)
-                return NotFound(ApiResponse<object>.Fail("Province not found."));
-            return Ok(ApiResponse<ProvinceDTO>.Successed(Province, "Province retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Province not found."));
+            return Ok(ApiResponse<ProvinceDTO>.Success(Province, "Province retrieved successfully."));
         }
 
         /// <summary>Get a province by its English name.</summary>
@@ -54,8 +54,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Province = await _ProvinceService.GetByEnglishNameAsync(ProvinceEnglishName);
             if (Province == null)
-                return NotFound(ApiResponse<object>.Fail("Province not found."));
-            return Ok(ApiResponse<ProvinceDTO>.Successed(Province, "Province retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Province not found."));
+            return Ok(ApiResponse<ProvinceDTO>.Success(Province, "Province retrieved successfully."));
         }
 
         /// <summary>Create a new Province</summary>
@@ -72,11 +72,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingProvince = await _ProvinceService.GetByArabicNameAsync(ProvinceDto.ArabicName);
             if (existingProvince != null)
-                return Conflict(ApiResponse<object>.Fail("Province with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Province with the same name already exists."));
             var createdProvince = await _ProvinceService.CreateAsync(ProvinceDto);
             if (createdProvince == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create province."));
-            return CreatedAtAction(nameof(GetProvinceByArabicName), new { ProvinceArabicName = createdProvince.ArabicName }, ApiResponse<ProvinceDTO>.Successed(createdProvince, "Province created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to create province."));
+            return CreatedAtAction(nameof(GetProvinceByArabicName), new { ProvinceArabicName = createdProvince.ArabicName }, ApiResponse<ProvinceDTO>.Success(createdProvince, "Province created successfully."));
         }
 
         /// <summary>Update an existing Province</summary>
@@ -93,11 +93,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingProvince = await _ProvinceService.GetByArabicNameAsync(ProvinceDto.ArabicName);
             if (existingProvince == null)
-                return NotFound(ApiResponse<object>.Fail("Province not found."));
+                return NotFound(ApiResponse<object>.Failure("Province not found."));
             var updatedProvince = await _ProvinceService.UpdateAsync(ProvinceDto);
             if (updatedProvince == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update province."));
-            return Ok(ApiResponse<ProvinceDTO>.Successed(updatedProvince, "Province updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to update province."));
+            return Ok(ApiResponse<ProvinceDTO>.Success(updatedProvince, "Province updated successfully."));
         }
 
         /// <summary>Delete a province by its Arabic name.</summary>
@@ -114,10 +114,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingProvince = await _ProvinceService.GetByArabicNameAsync(provinceArabicName);
             if (existingProvince == null)
-                return NotFound(ApiResponse<object>.Fail("Province not found."));
+                return NotFound(ApiResponse<object>.Failure("Province not found."));
             var isDeleted = await _ProvinceService.DeleteByArabicNameAsync(provinceArabicName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete province."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete province."));
             return NoContent();
         }
 
@@ -135,10 +135,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingProvince = await _ProvinceService.GetByEnglishNameAsync(provinceEnglishName);
             if (existingProvince == null)
-                return NotFound(ApiResponse<object>.Fail("Province not found."));
+                return NotFound(ApiResponse<object>.Failure("Province not found."));
             var isDeleted = await _ProvinceService.DeleteByEnglishNameAsync(provinceEnglishName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete province."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete province."));
             return NoContent();
         }
     }

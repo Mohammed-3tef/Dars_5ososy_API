@@ -31,8 +31,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Areas = await _AreaService.GetAllAsync();
             if (Areas == null || !Areas.Any())
-                return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Areas found."));
+            return Ok(ApiResponse<List<AreaDTO>>.Success(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Province Arabic Name.</summary>
@@ -45,8 +45,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Areas = await _AreaService.GetAllByProvinceArabicNameAsync(provinceArabicName);
             if (Areas == null || !Areas.Any())
-                return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Areas found."));
+            return Ok(ApiResponse<List<AreaDTO>>.Success(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Province English Name.</summary>
@@ -59,8 +59,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Areas = await _AreaService.GetAllByProvinceEnglishNameAsync(provinceEnglishName);
             if (Areas == null || !Areas.Any())
-                return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Areas found."));
+            return Ok(ApiResponse<List<AreaDTO>>.Success(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Governorate Arabic Name.</summary>
@@ -73,8 +73,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Areas = await _AreaService.GetAllByGovernorateArabicNameAsync(governorateArabicName);
             if (Areas == null || !Areas.Any())
-                return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Areas found."));
+            return Ok(ApiResponse<List<AreaDTO>>.Success(Areas, "Areas retrieved successfully."));
         }
 
         /// <summary>Gets all Areas by Governorate English Name.</summary>
@@ -87,8 +87,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Areas = await _AreaService.GetAllByGovernorateEnglishNameAsync(governorateEnglishName);
             if (Areas == null || !Areas.Any())
-                return NotFound(ApiResponse<object>.Fail("No Areas found."));
-            return Ok(ApiResponse<List<AreaDTO>>.Successed(Areas, "Areas retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Areas found."));
+            return Ok(ApiResponse<List<AreaDTO>>.Success(Areas, "Areas retrieved successfully."));
         }
         
         /// <summary>Gets an Area by Arabic Name.</summary>
@@ -102,9 +102,9 @@ namespace Dars_5ososy_API.Controllers
             var Area = await _AreaService.GetByArabicNameAsync(AreaArabicName);
 
             if (Area == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
+                return NotFound(ApiResponse<object>.Failure("Area not found."));
 
-            return Ok(ApiResponse<AreaDTO>.Successed(Area, "Area retrieved successfully."));
+            return Ok(ApiResponse<AreaDTO>.Success(Area, "Area retrieved successfully."));
         }
 
         /// <summary>Gets an Area by English Name.</summary>
@@ -118,9 +118,9 @@ namespace Dars_5ososy_API.Controllers
             var Area = await _AreaService.GetByEnglishNameAsync(AreaEnglishName);
 
             if (Area == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
+                return NotFound(ApiResponse<object>.Failure("Area not found."));
 
-            return Ok(ApiResponse<AreaDTO>.Successed(Area, "Area retrieved successfully."));
+            return Ok(ApiResponse<AreaDTO>.Success(Area, "Area retrieved successfully."));
         }
 
         /// <summary>Creates a new Area.</summary>
@@ -137,11 +137,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingArea = await _AreaService.GetByArabicNameAsync(AreaDto.ArabicName);
             if (existingArea == null)
-                return Conflict(ApiResponse<object>.Fail("Area with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Area with the same name already exists."));
             var createdArea = await _AreaService.CreateAsync(AreaDto);
             if (createdArea == null)
-                return BadRequest(ApiResponse<object>.Fail("Area with the same name already exists."));
-            return CreatedAtAction(nameof(GetAreaByArabicName), new { AreaArabicName = createdArea.ArabicName }, ApiResponse<AreaDTO>.Successed(createdArea, "Area created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Area with the same name already exists."));
+            return CreatedAtAction(nameof(GetAreaByArabicName), new { AreaArabicName = createdArea.ArabicName }, ApiResponse<AreaDTO>.Success(createdArea, "Area created successfully."));
         }
 
         /// <summary>Updates an existing Area by its Arabic or English name.</summary>
@@ -158,11 +158,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingArea = await _AreaService.GetByArabicNameAsync(AreaDto.ArabicName);
             if (existingArea == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
+                return NotFound(ApiResponse<object>.Failure("Area not found."));
             var updatedArea = await _AreaService.UpdateAsync(AreaDto);
             if (updatedArea == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update area."));
-            return Ok(ApiResponse<AreaDTO>.Successed(updatedArea, "Area updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to update area."));
+            return Ok(ApiResponse<AreaDTO>.Success(updatedArea, "Area updated successfully."));
         }
 
         /// <summary>Deletes an Area by its Arabic name.</summary>
@@ -180,10 +180,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingArea = await _AreaService.GetByArabicNameAsync(AreaArabicName);
             if (existingArea == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
+                return NotFound(ApiResponse<object>.Failure("Area not found."));
             var isDeleted = await _AreaService.DeleteByArabicNameAsync(AreaArabicName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete area."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete area."));
             return NoContent();
         }
 
@@ -202,10 +202,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingArea = await _AreaService.GetByEnglishNameAsync(AreaEnglishName);
             if (existingArea == null)
-                return NotFound(ApiResponse<object>.Fail("Area not found."));
+                return NotFound(ApiResponse<object>.Failure("Area not found."));
             var isDeleted = await _AreaService.DeleteByEnglishNameAsync(AreaEnglishName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete area."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete area."));
             return NoContent();
         }
     }

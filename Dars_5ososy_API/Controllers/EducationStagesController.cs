@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var educationStages = await _educationStageService.GetAllAsync();
             if (educationStages == null || !educationStages.Any())
-                return NotFound(ApiResponse<object>.Fail("No education stages found."));
-            return Ok(ApiResponse<List<EducationStageDTO>>.Successed(educationStages, "Education stages retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No education stages found."));
+            return Ok(ApiResponse<List<EducationStageDTO>>.Success(educationStages, "Education stages retrieved successfully."));
         }
 
         /// <summary>Get an education stage by its name.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var educationStage = await _educationStageService.GetByNameAsync(educationStageName);
             if (educationStage == null)
-                return NotFound(ApiResponse<object>.Fail("Education stage not found."));
-            return Ok(ApiResponse<EducationStageDTO>.Successed(educationStage, "Education stage retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Education stage not found."));
+            return Ok(ApiResponse<EducationStageDTO>.Success(educationStage, "Education stage retrieved successfully."));
         }
 
         /// <summary>Create a new education stage.</summary>
@@ -59,11 +59,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingEducationStage = await _educationStageService.GetByNameAsync(educationStageDto.EnglishName);
             if (existingEducationStage != null)
-                return Conflict(ApiResponse<object>.Fail("Education stage with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Education stage with the same name already exists."));
             var createdEducationStage = await _educationStageService.CreateAsync(educationStageDto);
             if (createdEducationStage == null)
-                return BadRequest(ApiResponse<object>.Fail("Education stage with the same name already exists."));
-            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<EducationStageDTO>.Successed(createdEducationStage, "Education stage created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Education stage with the same name already exists."));
+            return CreatedAtAction(nameof(GetEducationStageByName), new { EducationStageName = createdEducationStage.EnglishName }, ApiResponse<EducationStageDTO>.Success(createdEducationStage, "Education stage created successfully."));
         }
 
         /// <summary>Update an existing education stage.</summary>
@@ -80,17 +80,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingEducationStage = await _educationStageService.GetByNameAsync(educationStageDto.EnglishName);
             if (existingEducationStage != null)
-                return Conflict(ApiResponse<object>.Fail("Education stage with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Education stage with the same name already exists."));
             var updatedEducationStage = await _educationStageService.UpdateAsync(educationStageDto);
             if (updatedEducationStage == null)
-                return NotFound(ApiResponse<object>.Fail("Education stage not found."));
-            return Ok(ApiResponse<EducationStageDTO>.Successed(updatedEducationStage, "Education stage updated successfully."));
+                return NotFound(ApiResponse<object>.Failure("Education stage not found."));
+            return Ok(ApiResponse<EducationStageDTO>.Success(updatedEducationStage, "Education stage updated successfully."));
         }
 
         /// <summary>Delete an education stage.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete an education stage.</remarks>
         /// <response code="204">Education stage deleted successfully.</response>
-        /// <response code="400">Failed to delete education stage.</response>
+        /// <response code="400">Failureed to delete education stage.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         [HttpDelete("delete/{id}")]
@@ -100,7 +100,7 @@ namespace Dars_5ososy_API.Controllers
         {
             var isDeleted = await _educationStageService.DeleteAsync(id);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete education stage."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete education stage."));
             return NoContent();
         }
     }

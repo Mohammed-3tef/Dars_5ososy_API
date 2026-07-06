@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var subjects = await _subjectService.GetAllAsync();
             if (subjects == null || !subjects.Any())
-                return NotFound(ApiResponse<object>.Fail("No subjects found."));
-            return Ok(ApiResponse<List<SubjectDTO>>.Successed(subjects, "Subjects retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No subjects found."));
+            return Ok(ApiResponse<List<SubjectDTO>>.Success(subjects, "Subjects retrieved successfully."));
         }
 
         /// <summary>Get a subject by name.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var subject = await _subjectService.GetByNameAsync(subjectName);
             if (subject == null)
-                return NotFound(ApiResponse<object>.Fail("Subject not found."));
-            return Ok(ApiResponse<SubjectDTO>.Successed(subject, "Subject retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Subject not found."));
+            return Ok(ApiResponse<SubjectDTO>.Success(subject, "Subject retrieved successfully."));
         }
 
         /// <summary>Create a new subject.</summary>
@@ -59,11 +59,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingSubject = await _subjectService.GetByNameAsync(subjectDto.Name);
             if (existingSubject != null)
-                return Conflict(ApiResponse<object>.Fail("Subject with the same name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Subject with the same name already exists."));
             var createdSubject = await _subjectService.CreateAsync(subjectDto);
             if (createdSubject == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create subject."));
-            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<SubjectDTO>.Successed(createdSubject, "Subject created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to create subject."));
+            return CreatedAtAction(nameof(GetSubjectByName), new { subjectName = createdSubject.Name }, ApiResponse<SubjectDTO>.Success(createdSubject, "Subject created successfully."));
         }
 
         /// <summary>Update an existing subject.</summary>
@@ -80,11 +80,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingSubject = await _subjectService.GetByNameAsync(subjectDto.Name);
             if (existingSubject == null)
-                return NotFound(ApiResponse<object>.Fail("Subject not found."));
+                return NotFound(ApiResponse<object>.Failure("Subject not found."));
             var updatedSubject = await _subjectService.UpdateAsync(subjectDto);
             if (updatedSubject == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update subject."));
-            return Ok(ApiResponse<SubjectDTO>.Successed(updatedSubject, "Subject updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to update subject."));
+            return Ok(ApiResponse<SubjectDTO>.Success(updatedSubject, "Subject updated successfully."));
         }
 
         /// <summary>Create a new favorite.</summary>
@@ -100,7 +100,7 @@ namespace Dars_5ososy_API.Controllers
         {
             var isDeleted = await _subjectService.DeleteAsync(id);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete subject."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete subject."));
             return NoContent();
         }
     }

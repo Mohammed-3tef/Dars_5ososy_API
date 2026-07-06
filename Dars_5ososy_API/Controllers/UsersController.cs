@@ -29,8 +29,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var user = await _userService.GetByUserNameAsync(userName);
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
-            return Ok(ApiResponse<UserDTO>.Successed(user, "User details retrieved successfully"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
+            return Ok(ApiResponse<UserDTO>.Success(user, "User details retrieved successfully"));
         }
 
         /// <summary>Get a user by email.</summary>
@@ -43,8 +43,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var user = await _userService.GetByEmailAsync(email);
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
-            return Ok(ApiResponse<UserDTO>.Successed(user, "User details retrieved successfully"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
+            return Ok(ApiResponse<UserDTO>.Success(user, "User details retrieved successfully"));
         }
 
         /// <summary>Get a user by phone number.</summary>
@@ -57,8 +57,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
-            return Ok(ApiResponse<UserDTO>.Successed(user, "User details retrieved successfully"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
+            return Ok(ApiResponse<UserDTO>.Success(user, "User details retrieved successfully"));
         }
 
         /// <summary>Get all students.</summary>
@@ -71,8 +71,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var users = await _userService.GetAllStudentsAsync();
             if (users == null || !users.Any())
-                return NotFound(ApiResponse<object>.Fail("No students found"));
-            return Ok(ApiResponse<List<UserDTO>>.Successed(users, "All students retrieved successfully"));
+                return NotFound(ApiResponse<object>.Failure("No students found"));
+            return Ok(ApiResponse<List<UserDTO>>.Success(users, "All students retrieved successfully"));
         }
 
         /// <summary>Get all teachers.</summary>
@@ -85,8 +85,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var users = await _userService.GetAllTeachersAsync();
             if (users == null || !users.Any())
-                return NotFound(ApiResponse<object>.Fail("No teachers found"));
-            return Ok(ApiResponse<List<UserDTO>>.Successed(users, "All teachers retrieved successfully"));
+                return NotFound(ApiResponse<object>.Failure("No teachers found"));
+            return Ok(ApiResponse<List<UserDTO>>.Success(users, "All teachers retrieved successfully"));
         }
 
         /// <summary>Create a new user.</summary>
@@ -100,8 +100,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var createdUser = await _userService.CreateAsync(createdUserDTO, createdUserDTO.Password);
             if (createdUser == null)
-                return BadRequest(ApiResponse<object>.Fail("User creation failed"));
-            return Ok(ApiResponse<UserDTO>.Successed(createdUser, "User created successfully"));
+                return BadRequest(ApiResponse<object>.Failure("User creation failed"));
+            return Ok(ApiResponse<UserDTO>.Success(createdUser, "User created successfully"));
         }
 
         /// <summary>Update an existing user.</summary>
@@ -115,8 +115,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var updatedUser = await _userService.UpdateAsync(userDto);
             if (updatedUser == null)
-                return BadRequest(ApiResponse<object>.Fail("User update failed"));
-            return Ok(ApiResponse<UserDTO>.Successed(updatedUser, "User updated successfully"));
+                return BadRequest(ApiResponse<object>.Failure("User update failed"));
+            return Ok(ApiResponse<UserDTO>.Success(updatedUser, "User updated successfully"));
         }
 
         /// <summary>Delete an existing user.</summary>
@@ -130,7 +130,7 @@ namespace Dars_5ososy_API.Controllers
         {
             var result = await _userService.DeleteAsync(id);
             if (!result)
-                return BadRequest(ApiResponse<object>.Fail("User deletion failed"));
+                return BadRequest(ApiResponse<object>.Failure("User deletion failed"));
             return NoContent();
         }
     }

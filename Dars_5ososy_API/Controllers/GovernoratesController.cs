@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Governorates = await _GovernorateService.GetAllAsync();
             if (Governorates == null || !Governorates.Any())
-                return NotFound(ApiResponse<object>.Fail("No Governorates found."));
-            return Ok(ApiResponse<List<GovernorateDTO>>.Successed(Governorates, "Governorates retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Governorates found."));
+            return Ok(ApiResponse<List<GovernorateDTO>>.Success(Governorates, "Governorates retrieved successfully."));
         }
 
         /// <summary>Get all governorates by province Arabic name.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Governorates = await _GovernorateService.GetAllByProvinceArabicNameAsync(provinceArabicName);
             if (Governorates == null || !Governorates.Any())
-                return NotFound(ApiResponse<object>.Fail("No Governorates found."));
-            return Ok(ApiResponse<List<GovernorateDTO>>.Successed(Governorates, "Governorates retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Governorates found."));
+            return Ok(ApiResponse<List<GovernorateDTO>>.Success(Governorates, "Governorates retrieved successfully."));
         }
 
         /// <summary>Get all governorates by province English name.</summary>
@@ -55,8 +55,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Governorates = await _GovernorateService.GetAllByProvinceEnglishNameAsync(provinceEnglishName);
             if (Governorates == null || !Governorates.Any())
-                return NotFound(ApiResponse<object>.Fail("No Governorates found."));
-            return Ok(ApiResponse<List<GovernorateDTO>>.Successed(Governorates, "Governorates retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No Governorates found."));
+            return Ok(ApiResponse<List<GovernorateDTO>>.Success(Governorates, "Governorates retrieved successfully."));
         }
 
         /// <summary>Get a governorate by its Arabic name.</summary>
@@ -68,8 +68,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Governorate = await _GovernorateService.GetByArabicNameAsync(GovernorateArabicName);
             if (Governorate == null)
-                return NotFound(ApiResponse<object>.Fail("Governorate not found."));
-            return Ok(ApiResponse<GovernorateDTO>.Successed(Governorate, "Governorate retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Governorate not found."));
+            return Ok(ApiResponse<GovernorateDTO>.Success(Governorate, "Governorate retrieved successfully."));
         }
 
         /// <summary>Get a governorate by its English name.</summary>
@@ -81,14 +81,14 @@ namespace Dars_5ososy_API.Controllers
         {
             var Governorate = await _GovernorateService.GetByEnglishNameAsync(GovernorateEnglishName);
             if (Governorate == null)
-                return NotFound(ApiResponse<object>.Fail("Governorate not found."));
-            return Ok(ApiResponse<GovernorateDTO>.Successed(Governorate, "Governorate retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("Governorate not found."));
+            return Ok(ApiResponse<GovernorateDTO>.Success(Governorate, "Governorate retrieved successfully."));
         }
 
         /// <summary>Create a new governorate.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can create a governorate.</remarks>
         /// <response code="201">Governorate created successfully.</response>
-        /// <response code="400">Failed to create governorate.</response>
+        /// <response code="400">Failureed to create governorate.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="409">Governorate with the same name already exists.</response>
@@ -99,17 +99,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingGovernorate = await _GovernorateService.GetByArabicNameAsync(GovernorateDto.ArabicName);
             if (existingGovernorate != null)
-                return Conflict(ApiResponse<object>.Fail("Governorate with the same Arabic name already exists."));
+                return Conflict(ApiResponse<object>.Failure("Governorate with the same Arabic name already exists."));
             var createdGovernorate = await _GovernorateService.CreateAsync(GovernorateDto);
             if (createdGovernorate == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create governorate."));
-            return CreatedAtAction(nameof(GetGovernorateByArabicName), new { GovernorateArabicName = createdGovernorate.ArabicName }, ApiResponse<GovernorateDTO>.Successed(createdGovernorate, "Governorate created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to create governorate."));
+            return CreatedAtAction(nameof(GetGovernorateByArabicName), new { GovernorateArabicName = createdGovernorate.ArabicName }, ApiResponse<GovernorateDTO>.Success(createdGovernorate, "Governorate created successfully."));
         }
 
         /// <summary>Update a governorate.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can update a governorate.</remarks>
         /// <response code="200">Governorate updated successfully.</response>
-        /// <response code="400">Failed to update governorate.</response>
+        /// <response code="400">Failureed to update governorate.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Governorate not found.</response>
@@ -120,17 +120,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingGovernorate = await _GovernorateService.GetByArabicNameAsync(GovernorateDto.ArabicName);
             if (existingGovernorate == null)
-                return NotFound(ApiResponse<object>.Fail("Governorate not found."));
+                return NotFound(ApiResponse<object>.Failure("Governorate not found."));
             var updatedGovernorate = await _GovernorateService.UpdateAsync(GovernorateDto);
             if (updatedGovernorate == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update governorate."));
-            return Ok(ApiResponse<GovernorateDTO>.Successed(updatedGovernorate, "Governorate updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to update governorate."));
+            return Ok(ApiResponse<GovernorateDTO>.Success(updatedGovernorate, "Governorate updated successfully."));
         }
 
         /// <summary>Delete a governorate by its Arabic name.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete a governorate.</remarks>
         /// <response code="204">Governorate deleted successfully.</response>
-        /// <response code="400">Failed to delete governorate.</response>
+        /// <response code="400">Failureed to delete governorate.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Governorate not found.</response>
@@ -141,17 +141,17 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingGovernorate = await _GovernorateService.GetByArabicNameAsync(GovernorateArabicName);
             if (existingGovernorate == null)
-                return NotFound(ApiResponse<object>.Fail("Governorate not found."));
+                return NotFound(ApiResponse<object>.Failure("Governorate not found."));
             var isDeleted = await _GovernorateService.DeleteByArabicNameAsync(GovernorateArabicName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete governorate."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete governorate."));
             return NoContent();
         }
 
         /// <summary>Delete a governorate by its English name.</summary>
         /// <remarks>Only users with the <c>Admin</c> role can delete a governorate.</remarks>
         /// <response code="204">Governorate deleted successfully.</response>
-        /// <response code="400">Failed to delete governorate.</response>
+        /// <response code="400">Failureed to delete governorate.</response>
         /// <response code="401">Unauthorized. User is not authenticated.</response>
         /// <response code="403">Forbidden. User does not have the required role.</response>
         /// <response code="404">Governorate not found.</response>
@@ -162,10 +162,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingGovernorate = await _GovernorateService.GetByEnglishNameAsync(GovernorateEnglishName);
             if (existingGovernorate == null)
-                return NotFound(ApiResponse<object>.Fail("Governorate not found."));
+                return NotFound(ApiResponse<object>.Failure("Governorate not found."));
             var isDeleted = await _GovernorateService.DeleteByEnglishNameAsync(GovernorateEnglishName);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete governorate."));
+                return BadRequest(ApiResponse<object>.Failure("Failureed to delete governorate."));
             return NoContent();
         }
     }

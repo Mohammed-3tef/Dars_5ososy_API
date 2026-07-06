@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Reviews = await _ReviewService.GetAllAsync();
             if (Reviews == null || !Reviews.Any())
-                return NotFound(ApiResponse<object>.Fail("No reviews found."));
-            return Ok(ApiResponse<List<ReviewDTO>>.Successed(Reviews, "Reviews retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No reviews found."));
+            return Ok(ApiResponse<List<ReviewDTO>>.Success(Reviews, "Reviews retrieved successfully."));
         }
 
         /// <summary>Get reviews by student username.</summary>
@@ -41,9 +41,9 @@ namespace Dars_5ososy_API.Controllers
         {
             var Reviews = await _ReviewService.GetByStudentUsernameAsync(studentUsername);
             if (Reviews == null || !Reviews.Any())
-                return NotFound(ApiResponse<object>.Fail("No reviews found for the specified student."));
+                return NotFound(ApiResponse<object>.Failure("No reviews found for the specified student."));
 
-            return Ok(ApiResponse<List<ReviewDTO>>.Successed(Reviews, "Reviews retrieved successfully."));
+            return Ok(ApiResponse<List<ReviewDTO>>.Success(Reviews, "Reviews retrieved successfully."));
         }
 
         /// <summary>Get reviews by teacher username.</summary>
@@ -55,8 +55,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var Reviews = await _ReviewService.GetByTeacherUsernameAsync(teacherUsername);
             if (Reviews == null || !Reviews.Any())
-                return NotFound(ApiResponse<object>.Fail("No reviews found for the specified teacher."));
-            return Ok(ApiResponse<List<ReviewDTO>>.Successed(Reviews, "Reviews retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No reviews found for the specified teacher."));
+            return Ok(ApiResponse<List<ReviewDTO>>.Success(Reviews, "Reviews retrieved successfully."));
         }
 
         /// <summary>Get a review by student and teacher usernames.</summary>
@@ -68,8 +68,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var review = await _ReviewService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (review == null)
-                return NotFound(ApiResponse<object>.Fail("No review found for the specified student and teacher."));
-            return Ok(ApiResponse<ReviewDTO>.Successed(review, "Review retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No review found for the specified student and teacher."));
+            return Ok(ApiResponse<ReviewDTO>.Success(review, "Review retrieved successfully."));
         }
 
         /// <summary>Create a new review.</summary>
@@ -85,11 +85,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingReview = await _ReviewService.GetByStudentAndTeacherAsync(ReviewDto.StudentUsername, ReviewDto.TeacherUsername);
             if (existingReview != null)
-                return Conflict(ApiResponse<object>.Fail("Review with the same details already exists."));
+                return Conflict(ApiResponse<object>.Failure("Review with the same details already exists."));
             var createdReview = await _ReviewService.CreateAsync(ReviewDto);
             if (createdReview == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create review."));
-            return CreatedAtAction(nameof(GetAllReviews), ApiResponse<ReviewDTO>.Successed(createdReview, "Review created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to create review."));
+            return CreatedAtAction(nameof(GetAllReviews), ApiResponse<ReviewDTO>.Success(createdReview, "Review created successfully."));
         }
 
         /// <summary>Update an existing review.</summary>
@@ -105,11 +105,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingReview = await _ReviewService.GetByStudentAndTeacherAsync(ReviewDto.StudentUsername, ReviewDto.TeacherUsername);
             if (existingReview == null)
-                return NotFound(ApiResponse<object>.Fail("Review not found."));
+                return NotFound(ApiResponse<object>.Failure("Review not found."));
             var updatedReview = await _ReviewService.UpdateAsync(ReviewDto);
             if (updatedReview == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to update review."));
-            return Ok(ApiResponse<ReviewDTO>.Successed(updatedReview, "Review updated successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to update review."));
+            return Ok(ApiResponse<ReviewDTO>.Success(updatedReview, "Review updated successfully."));
         }
 
         /// <summary>Delete a review by student and teacher usernames.</summary>
@@ -125,10 +125,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingReview = await _ReviewService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (existingReview == null)
-                return NotFound(ApiResponse<object>.Fail("Review not found."));
+                return NotFound(ApiResponse<object>.Failure("Review not found."));
             var isDeleted = await _ReviewService.DeleteAsync(studentUsername, teacherUsername);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete review."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete review."));
             return NoContent();
         }
     }

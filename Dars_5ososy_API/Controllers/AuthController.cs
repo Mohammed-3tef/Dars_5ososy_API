@@ -58,11 +58,11 @@ namespace Dars_5ososy_API.Controllers
             var result = await _authService.RegisterUserAsync(dto);
 
             if (!result)
-                return BadRequest(ApiResponse<object>.Fail($"{(dto.IsStudent ? "Student" : "Teacher")} creation failed"));
+                return BadRequest(ApiResponse<object>.Failure($"{(dto.IsStudent ? "Student" : "Teacher")} creation failed"));
 
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                return BadRequest(ApiResponse<object>.Fail("User registration failed"));
+                return BadRequest(ApiResponse<object>.Failure("User registration failed"));
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var validToken = HttpUtility.UrlEncode(confirmationToken);
@@ -88,10 +88,11 @@ namespace Dars_5ososy_API.Controllers
             var token = await _tokenService.CreateToken(user);
 
             UserDTO userDTO = _mapper.Map<UserDTO>(user);
-            ApiResponse<object> apiResponse = 
-                ApiResponse<object>.Successed(new{token, user = userDTO}, "User registered successfully. Please check your email to confirm.");
-
-            return Ok(apiResponse);
+            return Ok(ApiResponse<object>.Success(new
+                {
+                    token, 
+                    user = userDTO
+                }, "User registered successfully. Please check your email to confirm."));
         }
 
         /// <summary>Login a user.</summary>
@@ -104,23 +105,21 @@ namespace Dars_5ososy_API.Controllers
             var user = await _userService.GetByEmailAsync(dto.Email);
 
             if (user == null)
-                return Unauthorized(ApiResponse<object>.Fail("Invalid email or password"));
+                return Unauthorized(ApiResponse<object>.Failure("Invalid email or password"));
 
             var checkPassword = await _authService.CheckPasswordAsync(dto);
 
             if (!checkPassword)
-                return Unauthorized(ApiResponse<object>.Fail("Invalid email or password"));
+                return Unauthorized(ApiResponse<object>.Failure("Invalid email or password"));
 
             var tokens = await _tokenService.CreateTokenPair(dto.Email);
 
-            ApiResponse<object> apiResponse = ApiResponse<object>.Successed(new
-            {
-                token = tokens.AccessToken,
-                refreshToken = tokens.RefreshToken,
-                user
-            }, "Login successful");
-
-            return Ok(apiResponse);
+            return Ok(ApiResponse<object>.Success(new
+                {
+                    token = tokens.AccessToken,
+                    refreshToken = tokens.RefreshToken,
+                    user
+                }, "Login successful"));
         }
 
         /// <summary>Refresh a user's token.</summary>
@@ -132,14 +131,14 @@ namespace Dars_5ososy_API.Controllers
         public async Task<IActionResult> Refresh(RefreshRequestDTO dto)
         {
             if (string.IsNullOrEmpty(dto?.RefreshToken))
-                return BadRequest(ApiResponse<object>.Fail("Refresh token is required"));
+                return BadRequest(ApiResponse<object>.Failure("Refresh token is required"));
 
             var existing = await _db.RefreshTokens
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Token == dto.RefreshToken && x.Revoked == null && x.Expires > DateTime.UtcNow);
 
             if (existing == null)
-                return Unauthorized(ApiResponse<object>.Fail("Invalid refresh token"));
+                return Unauthorized(ApiResponse<object>.Failure("Invalid refresh token"));
 
             // Revoke old token
             existing.Revoked = DateTime.UtcNow;
@@ -148,7 +147,7 @@ namespace Dars_5ososy_API.Controllers
             var user = existing.User;
             var tokens = await _tokenService.CreateTokenPair(user.Email);
 
-            return Ok(ApiResponse<object>.Successed(new
+            return Ok(ApiResponse<object>.Success(new
                 {
                     token = tokens.AccessToken,
                     refreshToken = tokens.RefreshToken
@@ -167,14 +166,14 @@ namespace Dars_5ososy_API.Controllers
             var user = await _userService.GetByEmailAsync(email);
 
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
 
             var result = await _authService.ConfirmEmailAsync(user, token);
 
             if (!result)
-                return BadRequest(ApiResponse<object>.Fail("Invalid email confirmation"));
+                return BadRequest(ApiResponse<object>.Failure("Invalid email confirmation"));
 
-            return Ok(ApiResponse<string>.Successed(user.Email, "Email confirmed successfully"));
+            return Ok(ApiResponse<string>.Success(new { Email = user.Email }, "Email confirmed successfully"));
         }
 
         /// <summary>Initiate a password reset request.</summary>
@@ -189,7 +188,7 @@ namespace Dars_5ososy_API.Controllers
             var user = await _userService.GetByEmailAsync(email);
 
             if (user == null)
-                return Ok(ApiResponse<object>.Successed(string.Empty, "If the email exists, a reset link has been sent.")); // don't expose users
+                return Ok(ApiResponse<object>.Success(string.Empty, "If the email exists, a reset link has been sent.")); // don't expose users
 
             var token = await _authService.GeneratePasswordResetTokenAsync(user);
 
@@ -211,7 +210,7 @@ namespace Dars_5ososy_API.Controllers
             };
             await _emailService.SendEmailAsync(emailRequest);
 
-            return Ok(ApiResponse<string>.Successed(string.Empty, "Reset link sent"));
+            return Ok(ApiResponse<string>.Success(string.Empty, "Reset link sent"));
         }
 
         /// <summary>Reset a user's password.</summary>
@@ -225,7 +224,7 @@ namespace Dars_5ososy_API.Controllers
             var user = await _userService.GetByEmailAsync(dto.Email);
 
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
 
             var decodedToken = WebUtility.UrlDecode(dto.Token);
 
@@ -233,9 +232,9 @@ namespace Dars_5ososy_API.Controllers
                 .ResetPasswordAsync(user, decodedToken, dto.NewPassword);
 
             if (!result)
-                return BadRequest(ApiResponse<object>.Fail("Password reset failed"));
+                return BadRequest(ApiResponse<object>.Failure("Password reset failed"));
 
-            return Ok(ApiResponse<string>.Successed(string.Empty, "Password reset successful"));
+            return Ok(ApiResponse<string>.Success(string.Empty, "Password reset successful"));
         }
 
         /// <summary>Get the details of the currently authenticated user.</summary>
@@ -251,14 +250,14 @@ namespace Dars_5ososy_API.Controllers
             var username = User.Identity?.Name;
 
             if (username == null)
-                return Unauthorized(ApiResponse<object>.Fail("User not authenticated"));
+                return Unauthorized(ApiResponse<object>.Failure("User not authenticated"));
 
             var user = await _userService.GetByUserNameAsync(username);
 
             if (user == null)
-                return NotFound(ApiResponse<object>.Fail("User not found"));
+                return NotFound(ApiResponse<object>.Failure("User not found"));
 
-            return Ok(ApiResponse<UserDTO>.Successed(user, "User details retrieved successfully"));
+            return Ok(ApiResponse<UserDTO>.Success(user, "User details retrieved successfully"));
         }
 
         /// <summary>Logout the current user.</summary>
@@ -273,7 +272,7 @@ namespace Dars_5ososy_API.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-                return Unauthorized(ApiResponse<object>.Fail("User not found"));
+                return Unauthorized(ApiResponse<object>.Failure("User not found"));
 
             // Revoke all active refresh tokens for this user
             var tokens = await _db.RefreshTokens
@@ -286,7 +285,7 @@ namespace Dars_5ososy_API.Controllers
 
             await _db.SaveChangesAsync();
 
-            return Ok(ApiResponse<string>.Successed(string.Empty, "Logged out successfully"));
+            return Ok(ApiResponse<string>.Success(string.Empty, "Logged out successfully"));
         }
     }
 }

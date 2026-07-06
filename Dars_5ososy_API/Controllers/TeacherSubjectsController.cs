@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var teacherSubjects = await _teacherSubjectService.GetAllAsync();
             if (teacherSubjects == null || !teacherSubjects.Any())
-                return NotFound(ApiResponse<object>.Fail("No teacher subjects found."));
-            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Successed(teacherSubjects, "Teacher subjects retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No teacher subjects found."));
+            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Success(teacherSubjects, "Teacher subjects retrieved successfully."));
         }
 
         /// <summary>Get teacher subjects by student username.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var teacherSubjects = await _teacherSubjectService.GetBySubjectCodeAsync(subjectCode);
             if (teacherSubjects == null || !teacherSubjects.Any())
-                return NotFound(ApiResponse<object>.Fail("No teacher subjects found for the specified subject."));
-            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Successed(teacherSubjects, "Teacher subjects retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No teacher subjects found for the specified subject."));
+            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Success(teacherSubjects, "Teacher subjects retrieved successfully."));
         }
 
         /// <summary>Get TeacherSubjects by teacher username.</summary>
@@ -54,8 +54,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var teacherSubjects = await _teacherSubjectService.GetByTeacherUsernameAsync(teacherUsername);
             if (teacherSubjects == null || !teacherSubjects.Any())
-                return NotFound(ApiResponse<object>.Fail("No teacher subjects found for the specified teacher."));
-            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Successed(teacherSubjects, "Teacher subjects retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No teacher subjects found for the specified teacher."));
+            return Ok(ApiResponse<List<TeacherSubjectDTO>>.Success(teacherSubjects, "Teacher subjects retrieved successfully."));
         }
 
         /// <summary>Create a new teacher subject.</summary>
@@ -71,11 +71,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingTeacherSubject = await _teacherSubjectService.GetByStudentAndTeacherAsync(TeacherSubjectDto.SubjectCode, TeacherSubjectDto.TeacherUsername);
             if (existingTeacherSubject != null)
-                return Conflict(ApiResponse<object>.Fail("Teacher subject with the same details already exists."));
+                return Conflict(ApiResponse<object>.Failure("Teacher subject with the same details already exists."));
             var createdTeacherSubject = await _teacherSubjectService.CreateAsync(TeacherSubjectDto);
             if (createdTeacherSubject == null)
-                return BadRequest(ApiResponse<object>.Fail("Failed to create teacher subject."));
-            return CreatedAtAction(nameof(GetAllTeacherSubjects), ApiResponse<TeacherSubjectDTO>.Successed(createdTeacherSubject, "Teacher subject created successfully."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to create teacher subject."));
+            return CreatedAtAction(nameof(GetAllTeacherSubjects), ApiResponse<TeacherSubjectDTO>.Success(createdTeacherSubject, "Teacher subject created successfully."));
         }
 
         /// <summary>Delete a teacher subject by student and teacher usernames.</summary>
@@ -91,10 +91,10 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingTeacherSubject = await _teacherSubjectService.GetByStudentAndTeacherAsync(studentUsername, teacherUsername);
             if (existingTeacherSubject == null)
-                return NotFound(ApiResponse<object>.Fail("Teacher subject not found."));
+                return NotFound(ApiResponse<object>.Failure("Teacher subject not found."));
             var isDeleted = await _teacherSubjectService.DeleteAsync(studentUsername, teacherUsername);
             if (!isDeleted)
-                return BadRequest(ApiResponse<object>.Fail("Failed to delete teacher subject."));
+                return BadRequest(ApiResponse<object>.Failure("Failed to delete teacher subject."));
             return NoContent();
         }
     }

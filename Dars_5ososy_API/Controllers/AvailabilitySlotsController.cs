@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var availabilitySlots = await _availabilitySlotService.GetAllAvailabilitySlotsAsync();
             if (availabilitySlots == null || !availabilitySlots.Any())
-                return NotFound(ApiResponse<List<AvailabilitySlotDTO>>.Fail("No availability slots found."));
-            return Ok(ApiResponse<List<AvailabilitySlotDTO>>.Successed(availabilitySlots, "Availability slots retrieved successfully."));
+                return NotFound(ApiResponse<List<AvailabilitySlotDTO>>.Failure("No availability slots found."));
+            return Ok(ApiResponse<List<AvailabilitySlotDTO>>.Success(availabilitySlots, "Availability slots retrieved successfully."));
         }
 
         /// <summary>Get availability slots by teacher username.</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var availabilitySlots = await _availabilitySlotService.GetAvailabilitySlotsByTeacherUsernameAsync(teacherUsername);
             if (availabilitySlots == null || !availabilitySlots.Any())
-                return NotFound(ApiResponse<List<AvailabilitySlotDTO>>.Fail($"No availability slots found for teacher with username '{teacherUsername}'."));
-            return Ok(ApiResponse<List<AvailabilitySlotDTO>>.Successed(availabilitySlots, $"Availability slots for teacher '{teacherUsername}' retrieved successfully."));
+                return NotFound(ApiResponse<List<AvailabilitySlotDTO>>.Failure($"No availability slots found for teacher with username '{teacherUsername}'."));
+            return Ok(ApiResponse<List<AvailabilitySlotDTO>>.Success(availabilitySlots, $"Availability slots for teacher '{teacherUsername}' retrieved successfully."));
         }
 
         /// <summary>Get a specific availability slot by teacher username, day of the week, and start time.</summary>
@@ -54,8 +54,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var availabilitySlot = await _availabilitySlotService.GetSpecificAvailabilitySlotByTeacherUsernameAsync(teacherUsername, dayOfWeek, startTime);
             if (availabilitySlot == null)
-                return NotFound(ApiResponse<AvailabilitySlotDTO>.Fail($"No availability slot found for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}'."));
-            return Ok(ApiResponse<AvailabilitySlotDTO>.Successed(availabilitySlot, $"Availability slot for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}' retrieved successfully."));
+                return NotFound(ApiResponse<AvailabilitySlotDTO>.Failure($"No availability slot found for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}'."));
+            return Ok(ApiResponse<AvailabilitySlotDTO>.Success(availabilitySlot, $"Availability slot for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}' retrieved successfully."));
         }
 
         /// <summary>Create a new availability slot.</summary>
@@ -73,11 +73,11 @@ namespace Dars_5ososy_API.Controllers
             var existingSlot = await _availabilitySlotService
                 .GetSpecificAvailabilitySlotByTeacherUsernameAsync(availabilitySlotDTO.TeacherUsername, availabilitySlotDTO.DayOfWeek, availabilitySlotDTO.StartTime);
             if (existingSlot != null)
-                return Conflict(ApiResponse<AvailabilitySlotDTO>.Fail($"An availability slot already exists for teacher '{availabilitySlotDTO.TeacherUsername}' on '{availabilitySlotDTO.DayOfWeek}' at '{availabilitySlotDTO.StartTime}'."));
+                return Conflict(ApiResponse<AvailabilitySlotDTO>.Failure($"An availability slot already exists for teacher '{availabilitySlotDTO.TeacherUsername}' on '{availabilitySlotDTO.DayOfWeek}' at '{availabilitySlotDTO.StartTime}'."));
             var createdAvailabilitySlot = await _availabilitySlotService.CreateAvailabilitySlotAsync(availabilitySlotDTO);
             if (createdAvailabilitySlot == null)
-                return BadRequest(ApiResponse<AvailabilitySlotDTO>.Fail("Failed to create availability slot."));
-            return CreatedAtAction(nameof(GetSpecificByTeacherUsername), new { teacherUsername = createdAvailabilitySlot.TeacherUsername, dayOfWeek = createdAvailabilitySlot.DayOfWeek, startTime = createdAvailabilitySlot.StartTime }, ApiResponse<AvailabilitySlotDTO>.Successed(createdAvailabilitySlot, "Availability slot created successfully."));
+                return BadRequest(ApiResponse<AvailabilitySlotDTO>.Failure("Failed to create availability slot."));
+            return CreatedAtAction(nameof(GetSpecificByTeacherUsername), new { teacherUsername = createdAvailabilitySlot.TeacherUsername, dayOfWeek = createdAvailabilitySlot.DayOfWeek, startTime = createdAvailabilitySlot.StartTime }, ApiResponse<AvailabilitySlotDTO>.Success(createdAvailabilitySlot, "Availability slot created successfully."));
         }
 
         /// <summary>Update an existing availability slot.</summary>
@@ -95,11 +95,11 @@ namespace Dars_5ososy_API.Controllers
             var existingSlot = await _availabilitySlotService
                 .GetSpecificAvailabilitySlotByTeacherUsernameAsync(availabilitySlotDTO.TeacherUsername, availabilitySlotDTO.DayOfWeek, availabilitySlotDTO.StartTime);
             if (existingSlot == null)
-                return NotFound(ApiResponse<AvailabilitySlotDTO>.Fail("Availability slot not found."));
+                return NotFound(ApiResponse<AvailabilitySlotDTO>.Failure("Availability slot not found."));
             var updatedAvailabilitySlot = await _availabilitySlotService.UpdateAvailabilitySlotAsync(availabilitySlotDTO);
             if (updatedAvailabilitySlot == null)
-                return BadRequest(ApiResponse<AvailabilitySlotDTO>.Fail("Failed to update availability slot."));
-            return Ok(ApiResponse<AvailabilitySlotDTO>.Successed(updatedAvailabilitySlot, "Availability slot updated successfully."));
+                return BadRequest(ApiResponse<AvailabilitySlotDTO>.Failure("Failed to update availability slot."));
+            return Ok(ApiResponse<AvailabilitySlotDTO>.Success(updatedAvailabilitySlot, "Availability slot updated successfully."));
         }
 
         /// <summary>Delete an existing availability slot.</summary>
@@ -117,10 +117,10 @@ namespace Dars_5ososy_API.Controllers
             var existingSlot = await _availabilitySlotService
                 .GetSpecificAvailabilitySlotByTeacherUsernameAsync(teacherUsername, dayOfWeek, startTime);
             if (existingSlot == null)
-                return NotFound(ApiResponse<AvailabilitySlotDTO>.Fail($"No availability slot found for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}' to delete."));
+                return NotFound(ApiResponse<AvailabilitySlotDTO>.Failure($"No availability slot found for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}' to delete."));
             var isDeleted = await _availabilitySlotService.DeleteAvailabilitySlotAsync(teacherUsername, dayOfWeek, startTime);
             if (!isDeleted)
-                return BadRequest(ApiResponse<bool>.Fail($"Failed to delete availability slot for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}'."));
+                return BadRequest(ApiResponse<bool>.Failure($"Failed to delete availability slot for teacher '{teacherUsername}' on '{dayOfWeek}' at '{startTime}'."));
             return NoContent();
         }
     }

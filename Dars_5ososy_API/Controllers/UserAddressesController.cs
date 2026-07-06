@@ -28,8 +28,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var userAddresses = await _userAddressService.GetAllUserAddressesAsync();
             if (userAddresses == null || !userAddresses.Any())
-                return NotFound(ApiResponse<object>.Fail("No user addresses found."));
-            return Ok(ApiResponse<List<UserAddressDTO>>.Successed(userAddresses, "User addresses retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("No user addresses found."));
+            return Ok(ApiResponse<List<UserAddressDTO>>.Success(userAddresses, "User addresses retrieved successfully."));
         }
 
         /// <summary>Get user address by username</summary>
@@ -41,8 +41,8 @@ namespace Dars_5ososy_API.Controllers
         {
             var userAddress = await _userAddressService.GetUserAddressByUsernameAsync(username);
             if (userAddress == null)
-                return NotFound(ApiResponse<object>.Fail("User address not found."));
-            return Ok(ApiResponse<UserAddressDTO>.Successed(userAddress, "User address retrieved successfully."));
+                return NotFound(ApiResponse<object>.Failure("User address not found."));
+            return Ok(ApiResponse<UserAddressDTO>.Success(userAddress, "User address retrieved successfully."));
         }
 
         /// <summary>Create a new user address</summary>
@@ -55,13 +55,13 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingUserAddress = await _userAddressService.GetUserAddressByUsernameAsync(userAddressDto.UserName);
             if (existingUserAddress == null)
-                return BadRequest(ApiResponse<object>.Fail("User address already exists."));
+                return BadRequest(ApiResponse<object>.Failure("User address already exists."));
 
             var createdUserAddress = await _userAddressService.CreateUserAddressAsync(userAddressDto);
             if (createdUserAddress == null)
-                return BadRequest(ApiResponse<object>.Fail("User address creation failed."));
+                return BadRequest(ApiResponse<object>.Failure("User address creation failed."));
 
-            return CreatedAtAction(nameof(GetUserAddressByUsername), new { username = createdUserAddress.UserName }, ApiResponse<UserAddressDTO>.Successed(createdUserAddress, "User address created successfully."));
+            return CreatedAtAction(nameof(GetUserAddressByUsername), new { username = createdUserAddress.UserName }, ApiResponse<UserAddressDTO>.Success(createdUserAddress, "User address created successfully."));
         }
 
         /// <summary>Update an existing user address</summary>
@@ -77,13 +77,13 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingUserAddress = await _userAddressService.GetUserAddressByUsernameAsync(userAddressDto.UserName);
             if (existingUserAddress == null)
-                return NotFound(ApiResponse<object>.Fail("User address not found."));
+                return NotFound(ApiResponse<object>.Failure("User address not found."));
 
             var updatedUserAddress = await _userAddressService.UpdateUserAddressAsync(userAddressDto);
             if (updatedUserAddress == null)
-                return BadRequest(ApiResponse<object>.Fail("User address update failed."));
+                return BadRequest(ApiResponse<object>.Failure("User address update failed."));
 
-            return Ok(ApiResponse<UserAddressDTO>.Successed(updatedUserAddress, "User address updated successfully."));
+            return Ok(ApiResponse<UserAddressDTO>.Success(updatedUserAddress, "User address updated successfully."));
         }
 
         /// <summary>Delete a user address by username</summary>
@@ -99,11 +99,11 @@ namespace Dars_5ososy_API.Controllers
         {
             var existingUserAddress = await _userAddressService.GetUserAddressByUsernameAsync(username);
             if (existingUserAddress == null)
-                return NotFound(ApiResponse<object>.Fail("User address not found."));
+                return NotFound(ApiResponse<object>.Failure("User address not found."));
 
             var deleted = await _userAddressService.DeleteUserAddressAsync(username);
             if (!deleted)
-                return BadRequest(ApiResponse<object>.Fail("User address deletion failed."));
+                return BadRequest(ApiResponse<object>.Failure("User address deletion failed."));
 
             return NoContent();
         }
